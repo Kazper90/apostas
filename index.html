@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vira Frangos — Central de Prognósticos & Gerador de Múltiplas IA</title>
+    <title>Vira Frangos — Challenge 10K & Prognósticos</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -276,6 +276,12 @@
         }
 
         .faq-content { padding: 0 20px 15px 20px; color: var(--text-muted); font-size: 0.9rem; display: none; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; text-align: left; }
+        th, td { padding: 12px 15px; border-bottom: 1px solid var(--border); }
+        th { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; }
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
+        .badge-live { background: rgba(245, 158, 11, 0.2); color: var(--gold); border: 1px solid var(--gold); }
     </style>
 </head>
 <body>
@@ -306,17 +312,17 @@
 
     <div class="container">
 
-        <!-- METRICAS -->
+        <!-- MÉTRICAS DE ARRANQUE REAL -->
         <div class="grid-4">
-            <div class="card"><div class="card-title">ROI Acumulado</div><div class="card-value green">+24,8%</div></div>
-            <div class="card"><div class="card-title">Win Rate (%)</div><div class="card-value gold">78%</div></div>
-            <div class="card"><div class="card-title">Odd Média</div><div class="card-value blue">1.82</div></div>
-            <div class="card"><div class="card-title">Lucro Total</div><div class="card-value gold">+155,20 NOK</div></div>
+            <div class="card"><div class="card-title">ROI Acumulado</div><div class="card-value gold">0,0%</div><span style="font-size:0.75rem; color:var(--text-muted)">Início do Challenge</span></div>
+            <div class="card"><div class="card-title">Win Rate (%)</div><div class="card-value gold">0%</div><span style="font-size:0.75rem; color:var(--text-muted)">Ronda #1 em curso</span></div>
+            <div class="card"><div class="card-title">Odd Total R1</div><div class="card-value blue">2.09</div><span style="font-size:0.75rem; color:var(--text-muted)">Em jogo</span></div>
+            <div class="card"><div class="card-title">Lucro Total</div><div class="card-value gold">0,00 NOK</div><span style="font-size:0.75rem; color:var(--text-muted)">A aguardar R1</span></div>
         </div>
 
         <!-- TAB 1: LISTA COMPLETA DE JOGOS -->
         <div id="prognosticos" class="tab-content active">
-            <h2 style="color: var(--gold); margin-bottom: 10px;"><i class="fa-solid fa-futbol"></i> Jogos do Dia &amp; Odds Disponíveis</h2>
+            <h2 style="color: var(--gold); margin-bottom: 10px;"><i class="fa-solid fa-futbol"></i> Jogos em Destaque &amp; Odds Disponíveis</h2>
             
             <div class="filter-bar">
                 <button class="filter-btn active" onclick="filtrarLiga('todas')">Todas as Ligas</button>
@@ -365,7 +371,7 @@
             </div>
         </div>
 
-        <!-- TAB 3: IA PREDICTOR COM SELEÇÃO DE JOGOS -->
+        <!-- TAB 3: IA PREDICTOR -->
         <div id="ia-predictor" class="tab-content">
             <div class="ai-box">
                 <h2 style="margin-top: 0; text-align: center; color: var(--gold);"><i class="fa-solid fa-robot"></i> ViraFrangos AI Predictor 2.0</h2>
@@ -405,6 +411,36 @@
             <div class="card" style="margin-bottom: 20px;">
                 <div class="card-title">Evolução do Challenge Rumo aos 10.000 NOK</div>
                 <div style="height: 250px;"><canvas id="chartEvolucao"></canvas></div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Últimas Rondas Registadas</div>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Ronda</th>
+                                <th>Data</th>
+                                <th>Jogos</th>
+                                <th>Odd</th>
+                                <th>Stake</th>
+                                <th>Retorno</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><b>#1</b></td>
+                                <td>14/08/2026</td>
+                                <td>Sporting vs Vitória SC + Telstar + Galatasaray</td>
+                                <td><b>2.09</b></td>
+                                <td>50,55 NOK</td>
+                                <td>105,65 NOK</td>
+                                <td><span class="badge badge-live">EM JOGO</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -455,14 +491,14 @@
     </div>
 
     <script>
-        // BASE DE DADOS COMPLETA DE JOGOS
+        // BASE DE DADOS DE JOGOS REAIS
         const jogosDatabase = [
             { id: 1, liga: "Portugal", equipas: "Sporting CP vs Vitória SC", hRating: 9, aRating: 6, opcoes: [ { label: "Vitória Sporting (1)", odd: 1.35 }, { label: "Ambas Marcam (Sim)", odd: 1.85 }, { label: "Over 2.5 Golos", odd: 1.65 } ] },
-            { id: 2, liga: "Portugal", equipas: "FC Porto vs SC Braga", hRating: 8, aRating: 7, opcoes: [ { label: "Vitória FC Porto (1)", odd: 1.80 }, { label: "Ambas Marcam (Sim)", odd: 1.70 }, { label: "Over 2.5 Golos", odd: 1.82 } ] },
-            { id: 3, liga: "Inglaterra", equipas: "Manchester City vs Newcastle", hRating: 9, aRating: 7, opcoes: [ { label: "Vitória Man City (1)", odd: 1.45 }, { label: "Over 2.5 Golos", odd: 1.55 }, { label: "Ambas Marcam (Sim)", odd: 1.65 } ] },
-            { id: 4, liga: "Inglaterra", equipas: "Arsenal vs Chelsea", hRating: 8, aRating: 7, opcoes: [ { label: "Vitória Arsenal (1)", odd: 1.75 }, { label: "Ambas Marcam (Sim)", odd: 1.62 }, { label: "Arsenal a Marcar 1º", odd: 1.50 } ] },
-            { id: 5, liga: "Espanha", equipas: "Real Madrid vs Real Sociedad", hRating: 9, aRating: 6, opcoes: [ { label: "Vitória Real Madrid (1)", odd: 1.40 }, { label: "Over 2.5 Golos", odd: 1.60 }, { label: "Real Madrid -1.5 HC", odd: 2.10 } ] },
-            { id: 6, liga: "Espanha", equipas: "Barcelona vs Villarreal", hRating: 8, aRating: 6, opcoes: [ { label: "Vitória Barcelona (1)", odd: 1.50 }, { label: "Ambas Marcam (Sim)", odd: 1.55 }, { label: "Over 3.5 Golos", odd: 2.20 } ] },
+            { id: 2, liga: "Portugal", equipas: "Gil Vicente vs Arouca", hRating: 6, aRating: 6, opcoes: [ { label: "Ambas Marcam (Sim)", odd: 1.75 }, { label: "Vitória Gil Vicente (1)", odd: 2.20 }, { label: "Over 2.5 Golos", odd: 1.90 } ] },
+            { id: 3, liga: "Portugal", equipas: "Estrela da Amadora vs Benfica", hRating: 4, aRating: 9, opcoes: [ { label: "Vitória Benfica (2)", odd: 1.32 }, { label: "Benfica -1.5 HC", odd: 1.85 }, { label: "Over 2.5 Golos", odd: 1.60 } ] },
+            { id: 4, liga: "Inglaterra", equipas: "Manchester City vs Newcastle", hRating: 9, aRating: 7, opcoes: [ { label: "Vitória Man City (1)", odd: 1.45 }, { label: "Over 2.5 Golos", odd: 1.55 }, { label: "Ambas Marcam (Sim)", odd: 1.65 } ] },
+            { id: 5, liga: "Inglaterra", equipas: "Arsenal vs Chelsea", hRating: 8, aRating: 7, opcoes: [ { label: "Vitória Arsenal (1)", odd: 1.75 }, { label: "Ambas Marcam (Sim)", odd: 1.62 }, { label: "Arsenal a Marcar 1º", odd: 1.50 } ] },
+            { id: 6, liga: "Espanha", equipas: "Real Madrid vs Real Sociedad", hRating: 9, aRating: 6, opcoes: [ { label: "Vitória Real Madrid (1)", odd: 1.40 }, { label: "Over 2.5 Golos", odd: 1.60 }, { label: "Real Madrid -1.5 HC", odd: 2.10 } ] },
             { id: 7, liga: "Outras", equipas: "Telstar vs Sparta Rotterdam", hRating: 5, aRating: 6, opcoes: [ { label: "Ambas Marcam (Sim)", odd: 1.62 }, { label: "Vitória Sparta (2)", odd: 2.15 }, { label: "Over 2.5 Golos", odd: 1.70 } ] },
             { id: 8, liga: "Outras", equipas: "Galatasaray vs Çorum FK", hRating: 9, aRating: 3, opcoes: [ { label: "Galatasaray -1.5 HC", odd: 1.45 }, { label: "Over 3.5 Golos", odd: 1.95 }, { label: "Vitória Galatasaray (1)", odd: 1.18 } ] }
         ];
@@ -514,7 +550,7 @@
             } else {
                 selectedTips.push({ id, jogo, selecao, name: `${jogo} (${selecao})`, odd });
             }
-            renderJogos(document.querySelector('.filter-btn.active').innerText.includes('Portugal') ? 'Portugal' : 'todas');
+            renderJogos('todas');
             updateSlip();
         }
 
@@ -538,13 +574,12 @@
             updateSlip();
         }
 
-        // GERADOR MÚLTIPLAS COM TODOS OS JOGOS
+        // GERADOR MÚLTIPLAS
         function gerarMultiplaIA() {
             const numGames = parseInt(document.getElementById('genGames').value);
             const profile = document.getElementById('genTarget').value;
             selectedTips = [];
 
-            // Algoritmo de seleção de apostas de valor
             let pool = [];
             jogosDatabase.forEach(j => {
                 if (profile === 'safe') pool.push({ id: `${j.equipas} - ${j.opcoes[0].label}`, jogo: j.equipas, selecao: j.opcoes[0].label, name: `${j.equipas} (${j.opcoes[0].label})`, odd: j.opcoes[0].odd });
@@ -552,7 +587,6 @@
                 else pool.push({ id: `${j.equipas} - HC`, jogo: j.equipas, selecao: j.opcoes[j.opcoes.length-1].label, name: `${j.equipas} (${j.opcoes[j.opcoes.length-1].label})`, odd: j.opcoes[j.opcoes.length-1].odd });
             });
 
-            // Seleciona jogos aleatórios da pool filtrada
             let escolhas = pool.sort(() => 0.5 - Math.random()).slice(0, numGames);
             escolhas.forEach(p => selectedTips.push(p));
 
