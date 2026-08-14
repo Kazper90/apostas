@@ -56,12 +56,11 @@ export default async function handler(req, res) {
     const data = await apiRes.json();
     const rawMatches = data.matches || [];
 
-    const matches = rawMatches.map((m) => {
+    const matches = rawMatches.map((m, index) => {
       const code = m.competition?.code || '';
       const compName = m.competition?.name || '';
       let categoriaLiga = 'Outras Ligas';
 
-      // Agrupamento exato para os filtros do teu site
       if (code === 'PPL' || compName.includes('Portugal') || compName.includes('Primeira')) {
         categoriaLiga = 'Liga Portugal';
       } else if (code === 'PL' || compName.includes('Premier League')) {
@@ -77,9 +76,9 @@ export default async function handler(req, res) {
         liga: categoriaLiga,
         equipas: `${home} vs ${away}`,
         opcoes: [
-          { label: 'Vitória Casa (1)', odd: (1.50 + (m.id % 5) * 0.2).toFixed(2) },
-          { label: 'Empate (X)', odd: (3.10 + (m.id % 3) * 0.2).toFixed(2) },
-          { label: 'Vitória Fora (2)', odd: (2.10 + (m.id % 4) * 0.3).toFixed(2) }
+          { label: 'Vitória Casa (1)', odd: (1.50 + (index % 5) * 0.2).toFixed(2) },
+          { label: 'Empate (X)', odd: (3.10 + (index % 3) * 0.2).toFixed(2) },
+          { label: 'Vitória Fora (2)', odd: (2.10 + (index % 4) * 0.3).toFixed(2) }
         ]
       };
     });
