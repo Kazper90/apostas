@@ -493,22 +493,30 @@
     <script>
         // BASE DE DADOS DE JOGOS REAIS
         let jogosDatabase = [];
-          async function carregarJogosDaAPI() {
+         async function carregarJogosDaAPI() {
     try {
         const res = await fetch('/api/matches');
         const data = await res.json();
         
-        if (Array.isArray(data) && data.length > 0) {
+        // Garante que o jogosDatabase recebe sempre um array, seja qual for o formato da resposta
+        if (Array.isArray(data)) {
             jogosDatabase = data;
+        } else if (data && Array.isArray(data.matches)) {
+            jogosDatabase = data.matches;
+        } else if (data && Array.isArray(data.jogos)) {
+            jogosDatabase = data.jogos;
         } else {
+            jogosDatabase = [];
             console.warn("Nenhum jogo retornado da API.");
         }
     } catch (e) {
         console.error("Erro ao conectar à API:", e);
+        jogosDatabase = [];
     } finally {
         renderJogos('todas');
-        popularSelectIA();
+        if (typeof popularSelectIA === 'function') popularSelectIA();
     }
+}
 } 
 
         let selectedTips = [];
