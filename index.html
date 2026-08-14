@@ -1,9 +1,9 @@
-   <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vira Frangos — Challenge 10K & Prognósticos</title>
+    <title>Vira Frangos — Challenge 10K</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -19,11 +19,10 @@
         }
 
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: 'Segoe UI', system-ui, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-light);
             margin: 0;
-            padding: 0;
             padding-bottom: 95px;
         }
 
@@ -38,12 +37,7 @@
             z-index: 100;
         }
 
-        .nav-tabs {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
+        .nav-tabs { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
 
         .tab-btn {
             background: transparent;
@@ -53,8 +47,6 @@
             border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
         }
 
         .tab-btn:hover, .tab-btn.active {
@@ -63,68 +55,10 @@
             border-color: var(--primary-red);
         }
 
-        .container {
-            max-width: 1100px;
-            margin: 20px auto;
-            padding: 0 20px;
-        }
+        .container { max-width: 1100px; margin: 20px auto; padding: 0 20px; }
 
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-
-        .grid-4 {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 20px;
-        }
-
-        .card-title {
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 6px;
-            font-weight: 600;
-        }
-
-        .card-value { font-size: 1.6rem; font-weight: 800; }
-        .gold { color: var(--gold); }
-        .green { color: var(--green); }
-        .blue { color: #38bdf8; }
-
-        .filter-bar {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            overflow-x: auto;
-            padding-bottom: 5px;
-        }
-
-        .filter-btn {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            white-space: nowrap;
-        }
-
-        .filter-btn.active {
-            background: var(--gold);
-            color: black;
-            font-weight: 700;
-            border-color: var(--gold);
-        }
 
         .match-card {
             background: var(--card-bg);
@@ -143,25 +77,10 @@
             margin-bottom: 12px;
         }
 
-        .league-title {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 600;
-        }
-
-        .match-teams {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: white;
-        }
-
         .markets-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 10px;
-            margin-top: 10px;
         }
 
         .market-item {
@@ -174,11 +93,6 @@
             align-items: center;
         }
 
-        .market-label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-
         .btn-odd {
             background: #1e293b;
             border: 1px solid var(--gold);
@@ -187,35 +101,9 @@
             padding: 6px 12px;
             border-radius: 6px;
             cursor: pointer;
-            transition: all 0.2s;
         }
 
-        .btn-odd:hover, .btn-odd.active {
-            background: var(--gold);
-            color: black;
-        }
-
-        .ai-box {
-            background: var(--card-bg);
-            border: 1px solid var(--gold);
-            border-radius: 16px;
-            padding: 25px;
-            max-width: 700px;
-            margin: 0 auto;
-            box-shadow: 0 0 25px rgba(245, 158, 11, 0.1);
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 12px;
-            background: #0d1321;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: white;
-            font-size: 0.95rem;
-            box-sizing: border-box;
-            margin-top: 5px;
-        }
+        .btn-odd.active { background: var(--gold); color: black; }
 
         .betslip-bar {
             position: fixed;
@@ -227,91 +115,43 @@
             justify-content: space-between;
             align-items: center;
             z-index: 1000;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.8);
-            flex-wrap: wrap;
-            gap: 10px;
         }
-
-        .betslip-info { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
     </style>
 </head>
 <body>
 
-    <!-- NAVBAR -->
     <div class="navbar">
         <div class="nav-tabs">
-            <button class="tab-btn active" onclick="switchTab('prognosticos', this)"><i class="fa-solid fa-list-check"></i> Todos os Jogos</button>
-            <button class="tab-btn" onclick="switchTab('gerador-multi', this)"><i class="fa-solid fa-wand-magic-sparkles" style="color: var(--gold);"></i> Gerador Múltiplas</button>
-            <button class="tab-btn" onclick="switchTab('dashboard', this)"><i class="fa-solid fa-chart-line"></i> Challenge 10K</button>
+            <button class="tab-btn active" onclick="switchTab('prognosticos', this)">Todos os Jogos</button>
+            <button class="tab-btn" onclick="switchTab('gerador-multi', this)">Gerador Múltiplas</button>
         </div>
-    </div>
-
-    <!-- CABEÇALHO -->
-    <div style="text-align: center; padding: 25px 0 10px 0;">
-        <h1 style="color: #ffffff; font-size: 1.8rem; font-weight: 800; margin: 0; letter-spacing: 1.5px; text-transform: uppercase;">
-            O CHALLENGE DOS <span style="color: #f59e0b;">10K</span>
-        </h1>
     </div>
 
     <div class="container">
-
-        <!-- MÉTRICAS -->
-        <div class="grid-4">
-            <div class="card"><div class="card-title">ROI Acumulado</div><div class="card-value gold">0,0%</div></div>
-            <div class="card"><div class="card-title">Win Rate (%)</div><div class="card-value gold">0%</div></div>
-            <div class="card"><div class="card-title">Odd Total R1</div><div class="card-value blue">2.09</div></div>
-            <div class="card"><div class="card-title">Lucro Total</div><div class="card-value gold">0,00 NOK</div></div>
-        </div>
-
-        <!-- TAB 1: JOGOS -->
         <div id="prognosticos" class="tab-content active">
-            <h2 style="color: var(--gold); margin-bottom: 10px;"><i class="fa-solid fa-futbol"></i> Jogos Disponíveis</h2>
-            
-            <div class="filter-bar">
-                <button class="filter-btn active" onclick="filtrarLiga('todas', this)">Todas as Ligas</button>
-                <button class="filter-btn" onclick="filtrarLiga('PT Liga Portugal', this)">PT Liga Portugal</button>
-                <button class="filter-btn" onclick="filtrarLiga('Premier League', this)">Premier League</button>
-            </div>
-
+            <h2 style="color: var(--gold);">Jogos Disponíveis</h2>
             <div id="listaJogosContainer"></div>
         </div>
 
-        <!-- TAB 2: GERADOR -->
         <div id="gerador-multi" class="tab-content">
-            <div class="ai-box">
-                <h2 style="margin-top: 0; text-align: center; color: var(--gold);">Gerador de Múltiplas</h2>
-                <button onclick="gerarMultiplaIA()" style="width: 100%; margin-top: 20px; background: var(--primary-red); border: none; color: white; padding: 14px; border-radius: 8px; font-weight: 800; cursor: pointer;">GERAR MÚLTIPLA</button>
-                <div id="genResult" style="display: none; margin-top: 20px; background: #0d1321; border: 1px solid var(--gold); border-radius: 12px; padding: 18px; color: white;"></div>
-            </div>
+            <h2 style="color: var(--gold);">Gerador</h2>
+            <button onclick="gerarMultiplaIA()" style="background: var(--primary-red); color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer;">Gerar</button>
+            <div id="genResult" style="margin-top: 15px;"></div>
         </div>
-
-        <!-- TAB 3: DASHBOARD -->
-        <div id="dashboard" class="tab-content">
-            <div class="card"><div class="card-title">Evolução do Challenge</div><div style="height: 200px;"><canvas id="chartEvolucao"></canvas></div></div>
-        </div>
-
     </div>
 
-    <!-- BOLETIM -->
     <div class="betslip-bar">
-        <div class="betslip-info">
-            <div><span style="color: var(--text-muted); font-size: 0.75rem;">SELEÇÕES:</span> <span id="slipCount" style="font-weight: 800; color: white;">0 Jogos</span></div>
-            <div><span style="color: var(--text-muted); font-size: 0.75rem;">ODD TOTAL:</span> <span id="slipOdd" style="font-weight: 800; color: var(--gold);">1.00</span></div>
-            <div><span style="color: var(--text-muted); font-size: 0.75rem;">STAKE:</span> <input type="number" id="slipStake" value="50" style="width: 60px; background: #151c2c; border: 1px solid var(--border); color: white; padding: 4px;" oninput="updateSlip()"></div>
-            <div><span style="color: var(--text-muted); font-size: 0.75rem;">RETORNO:</span> <span id="slipReturn" style="font-weight: 800; color: var(--green);">0.00 NOK</span></div>
-        </div>
-        <button onclick="clearSlip()" style="background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 8px 12px; cursor: pointer; border-radius: 6px;">Limpar</button>
+        <div>Seleções: <span id="slipCount">0</span></div>
+        <div>Odd Total: <span id="slipOdd">1.00</span></div>
     </div>
 
     <script>
         const jogosDatabase = [
-            { id: 1, liga: "PT Liga Portugal", equipas: "Sporting vs Vitória SC", opcoes: [{ label: "Vitória Sporting", odd: 1.45 }, { label: "Empate", odd: 4.20 }] },
-            { id: 2, liga: "PT Liga Portugal", equipas: "Benfica vs FC Porto", opcoes: [{ label: "Vitória Benfica", odd: 2.10 }, { label: "Vitória Porto", odd: 3.40 }] },
-            { id: 3, liga: "Premier League", equipas: "Arsenal vs Chelsea", opcoes: [{ label: "Vitória Arsenal", odd: 1.75 }, { label: "Vitória Chelsea", odd: 4.50 }] }
+            { id: 1, liga: "Premier League", equipas: "Arsenal vs Chelsea", opcoes: [{ label: "Vitória Arsenal", odd: 1.75 }, { label: "Vitória Chelsea", odd: 4.50 }] },
+            { id: 2, liga: "Premier League", equipas: "Man City vs Liverpool", opcoes: [{ label: "Vitória Man City", odd: 1.90 }, { label: "Vitória Liverpool", odd: 3.50 }] }
         ];
 
         let selectedTips = [];
-        let ligaAtual = 'todas';
 
         function switchTab(tabId, element) {
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -320,88 +160,44 @@
             if (element) element.classList.add('active');
         }
 
-        function renderJogos(liga = 'todas') {
-            ligaAtual = liga;
+        function renderJogos() {
             const container = document.getElementById('listaJogosContainer');
             if (!container) return;
             container.innerHTML = '';
 
-            const filtrados = jogosDatabase.filter(j => liga === 'todas' || j.liga === liga);
-
-            filtrados.forEach(j => {
-                let html = `<div class="match-card"><div class="match-header"><span class="league-title">${j.liga}</span><span class="match-teams">${j.equipas}</span></div><div class="markets-grid">`;
+            jogosDatabase.forEach(j => {
+                let html = `<div class="match-card"><div class="match-header"><span>${j.liga}</span><strong>${j.equipas}</strong></div><div class="markets-grid">`;
                 j.opcoes.forEach(op => {
                     let idAposta = `${j.equipas} - ${op.label}`;
                     let isSelected = selectedTips.some(s => s.id === idAposta);
-                    html += `<div class="market-item"><span class="market-label">${op.label}</span><button class="btn-odd ${isSelected ? 'active' : ''}" onclick="toggleAposta('${idAposta}', '${j.equipas}', '${op.label}', ${op.odd})">${op.odd.toFixed(2)}</button></div>`;
+                    html += `<div class="market-item"><span>${op.label}</span><button class="btn-odd ${isSelected ? 'active' : ''}" onclick="toggleAposta('${idAposta}', ${op.odd})">${op.odd.toFixed(2)}</button></div>`;
                 });
                 html += `</div></div>`;
                 container.innerHTML += html;
             });
         }
 
-        function filtrarLiga(liga, element) {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            if (element) element.classList.add('active');
-            renderJogos(liga);
-        }
-
-        function toggleAposta(id, jogo, selecao, odd) {
+        function toggleAposta(id, odd) {
             const index = selectedTips.findIndex(item => item.id === id);
-            if (index > -1) {
-                selectedTips.splice(index, 1);
-            } else {
-                selectedTips.push({ id, jogo, selecao, odd });
-            }
-            renderJogos(ligaAtual);
+            if (index > -1) selectedTips.splice(index, 1);
+            else selectedTips.push({ id, odd });
+            renderJogos();
             updateSlip();
         }
 
         function updateSlip() {
-            const stake = parseFloat(document.getElementById('slipStake').value) || 0;
-            document.getElementById('slipCount').innerText = selectedTips.length + ' Jogo(s)';
-            if (selectedTips.length === 0) {
-                document.getElementById('slipOdd').innerText = '1.00';
-                document.getElementById('slipReturn').innerText = '0.00 NOK';
-                return;
-            }
+            document.getElementById('slipCount').innerText = selectedTips.length;
             let totalOdd = selectedTips.reduce((acc, item) => acc * item.odd, 1);
-            let totalReturn = totalOdd * stake;
             document.getElementById('slipOdd').innerText = totalOdd.toFixed(2);
-            document.getElementById('slipReturn').innerText = totalReturn.toFixed(2) + ' NOK';
-        }
-
-        function clearSlip() {
-            selectedTips = [];
-            renderJogos(ligaAtual);
-            updateSlip();
         }
 
         function gerarMultiplaIA() {
-            selectedTips = [];
-            let randomMatch = jogosDatabase[Math.floor(Math.random() * jogosDatabase.length)];
-            let randomOpt = randomMatch.opcoes[Math.floor(Math.random() * randomMatch.opcoes.length)];
-            selectedTips.push({ id: `${randomMatch.equipas} - ${randomOpt.label}`, jogo: randomMatch.equipas, selecao: randomOpt.label, odd: randomOpt.odd });
-            
-            renderJogos(ligaAtual);
-            updateSlip();
-
-            document.getElementById('genResult').style.display = 'block';
-            document.getElementById('genResult').innerHTML = `<b>Múltipla Gerada:</b><br>${randomMatch.equipas} (${randomOpt.label}) - Odd: ${randomOpt.odd}`;
+            let r = jogosDatabase[Math.floor(Math.random() * jogosDatabase.length)];
+            let o = r.opcoes[0];
+            document.getElementById('genResult').innerHTML = `<b>Sugestão:</b> ${r.equipas} (${o.label}) - Odd: ${o.odd}`;
         }
 
-        window.onload = function() {
-            renderJogos('todas');
-            const ctx = document.getElementById('chartEvolucao').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['Início', 'Ronda 1'],
-                    datasets: [{ data: [50, 50], borderColor: '#f59e0b', tension: 0.3 }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-            });
-        };
+        window.onload = renderJogos;
     </script>
 </body>
 </html>
