@@ -1,9 +1,9 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vira Frangos — Época Completa & Prognósticos Profissionais</title>
+    <title>Vira Frangos — Betting Tips & Prognósticos de Especialistas</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -11,17 +11,17 @@
         :root {
             --bg-base: #060913;
             --bg-surface: #0f172a;
-            --bg-card: rgba(17, 24, 39, 0.75);
+            --bg-card: rgba(17, 24, 39, 0.85);
             --primary-red: #ef4444;
             --red-glow: rgba(239, 68, 68, 0.35);
             --gold: #fbbf24;
             --gold-light: #fde047;
             --gold-glow: rgba(251, 191, 36, 0.2);
             --green: #10b981;
+            --green-glow: rgba(16, 185, 129, 0.3);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --border-color: rgba(255, 255, 255, 0.08);
-            --border-glow: rgba(251, 191, 36, 0.4);
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -131,25 +131,7 @@
             backdrop-filter: blur(12px);
         }
 
-        .search-input {
-            width: 100%;
-            background: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            color: white;
-            padding: 12px 18px;
-            border-radius: 12px;
-            font-size: 0.95rem;
-            font-weight: 500;
-        }
-
-        .search-input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 15px var(--gold-glow); }
-
-        .filter-bar {
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            padding-bottom: 5px;
-        }
+        .filter-bar { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; }
 
         .filter-btn {
             background: var(--bg-surface);
@@ -167,7 +149,8 @@
         .filter-btn:hover { border-color: var(--gold); color: white; }
         .filter-btn.active { background: linear-gradient(135deg, var(--gold), #d97706); color: #060913; font-weight: 800; border-color: transparent; }
 
-        .match-card {
+        /* TIP CARD (OLBG STYLE) */
+        .tip-card {
             background: var(--bg-card);
             backdrop-filter: blur(12px);
             border: 1px solid var(--border-color);
@@ -175,60 +158,58 @@
             padding: 20px;
             margin-bottom: 16px;
             transition: var(--transition);
-        }
-
-        .match-card:hover { border-color: rgba(251, 191, 36, 0.3); transform: translateY(-2px); }
-
-        .match-header {
-            display: flex;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 20px;
             align-items: center;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 12px;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-            gap: 8px;
         }
 
-        .league-title {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 700;
+        @media(max-width: 768px) {
+            .tip-card { grid-template-columns: 1fr; }
         }
 
-        .match-teams { font-size: 1.1rem; font-weight: 800; color: white; margin-top: 4px; }
+        .tip-card:hover { border-color: rgba(251, 191, 36, 0.3); transform: translateY(-2px); }
 
-        .badge-status { font-size: 0.65rem; padding: 4px 10px; border-radius: 6px; font-weight: 800; text-transform: uppercase; }
-        .badge-agendado { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
-        .badge-aovivo { background: rgba(239, 68, 68, 0.2); color: var(--primary-red); border: 1px solid rgba(239, 68, 68, 0.4); }
-        .badge-finalizado { background: rgba(148, 163, 184, 0.1); color: var(--text-muted); border: 1px solid var(--border-color); }
-
-        .markets-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
-
-        .market-item {
-            background: rgba(6, 9, 19, 0.6);
-            border: 1px solid var(--border-color);
+        .tip-meta { display: flex; gap: 15px; align-items: center; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; }
+        .tip-meta span { display: flex; align-items: center; gap: 5px; }
+        .tip-teams { font-size: 1.15rem; font-weight: 800; color: white; margin-bottom: 10px; }
+        
+        .tipster-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(6, 9, 19, 0.5);
+            padding: 8px 12px;
             border-radius: 10px;
-            padding: 12px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            width: fit-content;
+            font-size: 0.8rem;
+            border: 1px solid var(--border-color);
         }
 
-        .market-label { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; }
+        .tipster-avatar { width: 28px; height: 28px; background: var(--gold); color: #060913; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; }
+
+        .tip-action-box {
+            background: rgba(6, 9, 19, 0.7);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            min-width: 180px;
+        }
+
+        .tip-market { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
+        .tip-prediction { font-size: 0.95rem; font-weight: 800; color: white; margin-bottom: 10px; }
 
         .btn-odd {
             background: rgba(30, 41, 59, 0.8);
             border: 1px solid var(--gold);
             color: var(--gold);
             font-weight: 800;
-            padding: 6px 12px;
-            border-radius: 6px;
+            padding: 8px 16px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 0.9rem;
-            min-width: 70px;
+            font-size: 1rem;
+            width: 100%;
             text-align: center;
             transition: var(--transition);
         }
@@ -263,7 +244,7 @@
 
     <nav class="navbar">
         <div class="nav-tabs">
-            <button class="tab-btn active" onclick="switchTab('prognosticos', this)"><i class="fa-solid fa-calendar-days"></i> Época Completa</button>
+            <button class="tab-btn active" onclick="switchTab('dicas', this)"><i class="fa-solid fa-fire"></i> Betting Tips & Prognósticos</button>
             <button class="tab-btn" onclick="switchTab('dashboard', this)"><i class="fa-solid fa-chart-line"></i> Challenge 10K</button>
         </div>
     </nav>
@@ -272,16 +253,14 @@
         <div class="header-logo-wrapper">
             <img src="https://raw.githubusercontent.com/Kazper90/apostas/main/ViraFrangosLogo.jpg" alt="Vira Frangos Logo" class="header-logo" onerror="this.onerror=null; this.src='ViraFrangosLogo.jpg';">
         </div>
-        <div class="header-subtitle"><i class="fa-solid fa-trophy"></i> Arquivo Completo da Época & Prognósticos</div>
+        <div class="header-subtitle"><i class="fa-solid fa-ranking-star"></i> Comunidade de Tipsters & Análises de Especialistas</div>
     </header>
 
     <main class="container">
-        <section id="prognosticos" class="tab-content active">
-            <h2 class="section-title"><i class="fa-solid fa-globe"></i> Base de Dados de Toda a Época</h2>
+        <section id="dicas" class="tab-content active">
+            <h2 class="section-title"><i class="fa-solid fa-list-check"></i> Melhores Dicas de Apostas da Época</h2>
             
             <div class="controls-panel">
-                <input type="text" id="searchBox" class="search-input" placeholder="🔍 Pesquisar equipa, campeonato ou data (ex: Sporting, Premier League)..." oninput="filtrarDados()">
-                
                 <div class="filter-bar" id="ligaFilterBar">
                     <button class="filter-btn active" onclick="setLiga('todas', this)">Todas as Ligas</button>
                     <button class="filter-btn" onclick="setLiga('PT Liga Portugal', this)">PT Liga Portugal</button>
@@ -293,20 +272,22 @@
                 </div>
             </div>
 
-            <div id="listaJogosContainer"></div>
+            <div id="listaTipsContainer"></div>
         </section>
 
         <section id="dashboard" class="tab-content">
-            <div class="match-card">
-                <div class="match-header"><span class="league-title">Evolução do Challenge</span><span class="match-teams">Gráfico de Performance</span></div>
-                <div style="height: 250px;"><canvas id="chartEvolucao"></canvas></div>
+            <div class="tip-card">
+                <div>
+                    <div class="tip-teams">Evolução do Challenge 10K</div>
+                    <div style="height: 250px; width: 100%; margin-top: 15px;"><canvas id="chartEvolucao"></canvas></div>
+                </div>
             </div>
         </section>
     </main>
 
     <div class="betslip-bar">
         <div class="betslip-info">
-            <div><span class="betslip-field-label">Seleções</span><span id="slipCount" style="font-weight: 800; color: white;">0 Jogo(s)</span></div>
+            <div><span class="betslip-field-label">Seleções</span><span id="slipCount" style="font-weight: 800; color: white;">0 Dica(s)</span></div>
             <div><span class="betslip-field-label">Odd Total</span><span id="slipOdd" style="font-weight: 800; color: var(--gold);">1.00</span></div>
             <div><span class="betslip-field-label">Stake (NOK)</span><input type="number" id="slipStake" value="50" class="stake-input" oninput="updateSlip()"></div>
             <div><span class="betslip-field-label">Retorno Possível</span><span id="slipReturn" style="font-weight: 800; color: var(--green);">0.00 NOK</span></div>
@@ -315,22 +296,15 @@
     </div>
 
     <script>
-        // BASE DE DADOS EXPANDIDA COM TODA A ÉPOCA CORRENTE
-        const épocaDatabase = [
-            { id: 1, data: "18/08/2026", liga: "Premier League", equipas: "Manchester City vs Newcastle United", estado: "agendado", opcoes: [{ label: "Casa (1)", odd: 1.50 }, { label: "Empate (X)", odd: 4.30 }, { label: "Fora (2)", odd: 6.00 }] },
-            { id: 2, data: "17/08/2026", liga: "PT Liga Portugal", equipas: "Sporting CP vs FC Porto", estado: "agendado", opcoes: [{ label: "Casa (1)", odd: 2.10 }, { label: "Empate (X)", odd: 3.20 }, { label: "Fora (2)", odd: 3.40 }] },
-            { id: 3, data: "16/08/2026", liga: "La Liga", equipas: "FC Barcelona vs Valencia CF", estado: "agendado", opcoes: [{ label: "Casa (1)", odd: 1.40 }, { label: "Empate (X)", odd: 4.80 }, { label: "Fora (2)", odd: 7.00 }] },
-            { id: 4, data: "15/08/2026", liga: "Serie A", equipas: "AS Roma vs Lazio", estado: "agendado", opcoes: [{ label: "Casa (1)", odd: 2.30 }, { label: "Empate (X)", odd: 3.10 }, { label: "Fora (2)", odd: 3.20 }] },
-            { id: 5, data: "14/08/2026", liga: "Copa Libertadores", equipas: "CA Rosario Central vs SC Corinthians Paulista", estado: "agendado", opcoes: [{ label: "Casa (1)", odd: 1.90 }, { label: "Empate (X)", odd: 3.40 }, { label: "Fora (2)", odd: 3.10 }] },
-            { id: 6, data: "14/08/2026", liga: "Premier League", equipas: "Arsenal vs Chelsea", estado: "aovivo", opcoes: [{ label: "Casa (1)", odd: 1.75 }, { label: "Empate (X)", odd: 3.60 }, { label: "Fora (2)", odd: 4.50 }] },
-            { id: 7, data: "14/08/2026", liga: "PT Liga Portugal", equipas: "Sporting CP vs Vitória SC", estado: "agendado", opcoes: [{ label: "Casa (1)", odd: 1.45 }, { label: "Empate (X)", odd: 4.20 }, { label: "Fora (2)", odd: 6.50 }] },
-            { id: 8, data: "13/08/2026", liga: "PT Liga Portugal", equipas: "FC Porto vs Benfica", estado: "finalizado", opcoes: [{ label: "Casa (1)", odd: 2.10 }, { label: "Empate (X)", odd: 3.20 }, { label: "Fora (2)", odd: 3.40 }] },
-            { id: 9, data: "13/08/2026", liga: "La Liga", equipas: "Real Madrid vs FC Barcelona", estado: "finalizado", opcoes: [{ label: "Casa (1)", odd: 2.25 }, { label: "Empate (X)", odd: 3.50 }, { label: "Fora (2)", odd: 2.90 }] },
-            { id: 10, data: "12/08/2026", liga: "Serie A", equipas: "AC Milan vs Inter de Milão", estado: "finalizado", opcoes: [{ label: "Casa (1)", odd: 2.70 }, { label: "Empate (X)", odd: 3.10 }, { label: "Fora (2)", odd: 2.65 }] },
-            { id: 11, data: "11/08/2026", liga: "Champions League", equipas: "Bayern de Munique vs Manchester City", estado: "finalizado", opcoes: [{ label: "Casa (1)", odd: 2.40 }, { label: "Empate (X)", odd: 3.60 }, { label: "Fora (2)", odd: 2.75 }] },
-            { id: 12, data: "10/08/2026", liga: "Premier League", equipas: "Liverpool vs Manchester United", estado: "finalizado", opcoes: [{ label: "Casa (1)", odd: 1.80 }, { label: "Empate (X)", odd: 3.80 }, { label: "Fora (2)", odd: 4.00 }] },
-            { id: 13, data: "05/08/2026", liga: "Premier League", equipas: "Brighton vs Tottenham", estado: "finalizado", opcoes: [{ label: "Casa (1)", odd: 2.50 }, { label: "Empate (X)", odd: 3.40 }, { label: "Fora (2)", odd: 2.70 }] },
-            { id: 14, data: "02/08/2026", liga: "La Liga", equipas: "Sevilla vs Real Betis", estado: "finalizado", opcoes: [{ label: "Casa (1)", odd: 2.10 }, { label: "Empate (X)", odd: 3.25 }, { label: "Fora (2)", odd: 3.50 }] }
+        // BASE DE DADOS ESTILO OLBG (COM TIPSTERS E MERCADOS ESPECÍFICOS)
+        const dbTips = [
+            { id: 1, liga: "Premier League", data: "18/08/2026", equipas: "Manchester City vs Newcastle United", tipster: "MasterOdds", yield: "+14.2%", mercado: "Resultado Final", selecao: "Manchester City (1)", odd: 1.50 },
+            { id: 2, liga: "PT Liga Portugal", data: "17/08/2026", equipas: "Sporting CP vs FC Porto", tipster: "FrangoKing", yield: "+22.5%", mercado: "Ambas as Equipas Marcam", selecao: "Sim", odd: 1.85 },
+            { id: 3, liga: "La Liga", data: "16/08/2026", equipas: "FC Barcelona vs Valencia CF", tipster: "GolDePlaca", yield: "+9.8%", mercado: "Total de Golos", selecao: "Mais de 2.5", odd: 1.70 },
+            { id: 4, liga: "Serie A", data: "15/08/2026", equipas: "AS Roma vs Lazio", tipster: "CalcioExpert", yield: "+18.1%", mercado: "Dupla Hipótese", selecao: "AS Roma ou Empate", odd: 1.38 },
+            { id: 5, liga: "Copa Libertadores", data: "14/08/2026", equipas: "CA Rosario Central vs SC Corinthians Paulista", tipster: "SouthAmericaTips", yield: "+11.4%", mercado: "Resultado Final", selecao: "CA Rosario Central (1)", odd: 1.90 },
+            { id: 6, liga: "Premier League", data: "14/08/2026", equipas: "Arsenal vs Chelsea", tipster: "LondonCalling", yield: "+25.0%", mercado: "Resultado Final", selecao: "Arsenal (1)", odd: 1.75 },
+            { id: 7, liga: "PT Liga Portugal", data: "14/08/2026", equipas: "Sporting CP vs Vitória SC", tipster: "LeoPrognosticos", yield: "+12.0%", mercado: "Handicap Asiático", selecao: "Sporting CP -1.5", odd: 2.20 }
         ];
 
         let selectedTips = [];
@@ -347,69 +321,64 @@
             ligaAtual = liga;
             document.querySelectorAll('#ligaFilterBar .filter-btn').forEach(b => b.classList.remove('active'));
             if (element) element.classList.add('active');
-            filtrarDados();
+            renderTips();
         }
 
-        function filtrarDados() {
-            const query = document.getElementById('searchBox').value.toLowerCase();
-            const container = document.getElementById('listaJogosContainer');
+        function renderTips() {
+            const container = document.getElementById('listaTipsContainer');
             container.innerHTML = '';
 
-            const filtrados = épocaDatabase.filter(j => {
-                const matchLiga = ligaAtual === 'todas' || j.liga === ligaAtual;
-                const matchQuery = j.equipas.toLowerCase().includes(query) || j.liga.toLowerCase().includes(query) || j.data.includes(query);
-                return matchLiga && matchQuery;
-            });
+            const filtrados = dbTips.filter(t => ligaAtual === 'todas' || t.liga === ligaAtual);
 
             if (filtrados.length === 0) {
-                container.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 40px; font-weight: 600;">Nenhum jogo encontrado para esta pesquisa.</div>`;
+                container.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 40px; font-weight: 600;">Sem dicas disponíveis para esta liga.</div>`;
                 return;
             }
 
-            filtrados.forEach(j => {
-                let badgeClass = j.estado === 'aovivo' ? 'badge-aovivo' : (j.estado === 'agendado' ? 'badge-agendado' : 'badge-finalizado');
-                let badgeText = j.estado === 'aovivo' ? '🔴 Ao Vivo' : (j.estado === 'agendado' ? '📅 Agendado' : '✅ Finalizado');
+            filtrados.forEach(t => {
+                let uniqueId = `${t.id}-${t.selecao}`;
+                let isSelected = selectedTips.some(s => s.id === uniqueId);
 
-                let html = `
-                    <div class="match-card">
-                        <div class="match-header">
-                            <div>
-                                <span class="league-title"><i class="fa-solid fa-trophy" style="color: var(--gold);"></i> ${j.liga} &bull; ${j.data}</span>
-                                <div class="match-teams">${j.equipas}</div>
+                container.innerHTML += `
+                    <div class="tip-card">
+                        <div>
+                            <div class="tip-meta">
+                                <span><i class="fa-solid fa-trophy" style="color: var(--gold);"></i> ${t.liga}</span>
+                                <span><i class="fa-solid fa-calendar"></i> ${t.data}</span>
                             </div>
-                            <span class="badge-status ${badgeClass}">${badgeText}</span>
+                            <div class="tip-teams">${t.equipas}</div>
+                            <div class="tipster-info">
+                                <div class="tipster-avatar">${t.tipster.charAt(0)}</div>
+                                <div>
+                                    <strong style="color: white; display: block;">${t.tipster}</strong>
+                                    <span style="color: var(--green);">Yield: ${t.yield}</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="markets-grid">
+                        <div class="tip-action-box">
+                            <div class="tip-market">${t.mercado}</div>
+                            <div class="tip-prediction">${t.selecao}</div>
+                            <button class="btn-odd ${isSelected ? 'active' : ''}" onclick="toggleTip('${uniqueId}', '${t.equipas}', '${t.selecao}', ${t.odd})">${t.odd.toFixed(2)}</button>
+                        </div>
+                    </div>
                 `;
-                j.opcoes.forEach(op => {
-                    let idAposta = `${j.id}-${op.label}`;
-                    let isSelected = selectedTips.some(s => s.id === idAposta);
-                    html += `
-                        <div class="market-item">
-                            <span class="market-label">${op.label}</span>
-                            <button class="btn-odd ${isSelected ? 'active' : ''}" onclick="toggleAposta('${idAposta}', '${j.equipas}', '${op.label}', ${op.odd})">${op.odd.toFixed(2)}</button>
-                        </div>
-                    `;
-                });
-                html += `</div></div>`;
-                container.innerHTML += html;
             });
         }
 
-        function toggleAposta(id, jogo, selecao, odd) {
+        function toggleTip(id, jogo, selecao, odd) {
             const index = selectedTips.findIndex(item => item.id === id);
             if (index > -1) {
                 selectedTips.splice(index, 1);
             } else {
                 selectedTips.push({ id, jogo, selecao, odd });
             }
-            filtrarDados();
+            renderTips();
             updateSlip();
         }
 
         function updateSlip() {
             const stake = parseFloat(document.getElementById('slipStake').value) || 0;
-            document.getElementById('slipCount').innerText = selectedTips.length + ' Jogo(s)';
+            document.getElementById('slipCount').innerText = selectedTips.length + ' Dica(s)';
             if (selectedTips.length === 0) {
                 document.getElementById('slipOdd').innerText = '1.00';
                 document.getElementById('slipReturn').innerText = '0.00 NOK';
@@ -423,12 +392,12 @@
 
         function clearSlip() {
             selectedTips = [];
-            filtrarDados();
+            renderTips();
             updateSlip();
         }
 
         window.onload = function() {
-            filtrarDados();
+            renderTips();
             const ctx = document.getElementById('chartEvolucao').getContext('2d');
             new Chart(ctx, {
                 type: 'line',
