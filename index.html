@@ -1,86 +1,444 @@
-     <!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vira Frangos — Central de Dados e Prognósticos</title>
+    <title>Vira Frangos — Época Completa & Prognósticos Profissionais</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-base: #060913; --bg-card: #0f172a; --gold: #fbbf24; --green: #10b981; 
-            --red: #ef4444; --text-main: #f8fafc; --text-muted: #94a3b8;
+            --bg-base: #060913;
+            --bg-surface: #0f172a;
+            --bg-card: rgba(17, 24, 39, 0.75);
+            --primary-red: #ef4444;
+            --red-glow: rgba(239, 68, 68, 0.35);
+            --gold: #fbbf24;
+            --gold-light: #fde047;
+            --gold-glow: rgba(251, 191, 36, 0.2);
+            --green: #10b981;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(251, 191, 36, 0.4);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        body { font-family: 'Inter', sans-serif; background: var(--bg-base); color: var(--text-main); margin: 0; padding-bottom: 150px; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-        
-        /* Badges de Estado */
-        .badge { font-size: 0.65rem; padding: 2px 8px; border-radius: 4px; font-weight: 800; text-transform: uppercase; }
-        .bg-finalizado { background: #334155; color: #cbd5e1; }
-        .bg-vivo { background: var(--red); color: white; animation: pulse 2s infinite; }
-        
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
 
-        /* Tabela de Jogos Estilo Profissional */
-        .match-row {
-            display: grid; grid-template-columns: 100px 1fr 150px 120px;
-            align-items: center; background: var(--bg-card); padding: 15px 20px;
-            border-radius: 12px; margin-bottom: 10px; border: 1px solid #1e293b;
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding-bottom: 140px;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(251, 191, 36, 0.03) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(239, 68, 68, 0.03) 0%, transparent 40%);
+            background-attachment: fixed;
         }
-        .header-row { font-weight: 800; color: var(--text-muted); font-size: 0.8rem; background: transparent; border: none; }
+
+        .navbar {
+            background: rgba(6, 9, 19, 0.9);
+            backdrop-filter: blur(16px);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: center;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-tabs { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+
+        .tab-btn {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 10px 22px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tab-btn:hover { color: var(--text-main); border-color: rgba(255, 255, 255, 0.2); }
+        .tab-btn.active { background: linear-gradient(135deg, var(--primary-red), #b91c1c); color: white; border-color: transparent; box-shadow: 0 8px 20px var(--red-glow); }
+
+        .header-banner {
+            text-align: center;
+            padding: 40px 20px 30px 20px;
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.8) 0%, transparent 100%);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header-logo-wrapper {
+            display: inline-block;
+            padding: 5px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), transparent);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            margin-bottom: 15px;
+        }
+
+        .header-logo { max-height: 220px; width: auto; object-fit: contain; display: block; border-radius: 16px; }
+
+        .header-subtitle {
+            font-size: 0.9rem;
+            color: var(--gold);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .container { max-width: 1200px; margin: 35px auto; padding: 0 24px; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.4s ease forwards; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+        .section-title {
+            color: var(--text-main);
+            margin-bottom: 20px;
+            font-size: 1.35rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title i { color: var(--gold); }
+
+        .controls-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            backdrop-filter: blur(12px);
+        }
+
+        .search-input {
+            width: 100%;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            color: white;
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .search-input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 15px var(--gold-glow); }
+
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .filter-btn {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.82rem;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: var(--transition);
+        }
+
+        .filter-btn:hover { border-color: var(--gold); color: white; }
+        .filter-btn.active { background: linear-gradient(135deg, var(--gold), #d97706); color: #060913; font-weight: 800; border-color: transparent; }
+
+        .match-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: var(--transition);
+        }
+
+        .match-card:hover { border-color: rgba(251, 191, 36, 0.3); transform: translateY(-2px); }
+
+        .match-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .league-title {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        .match-teams { font-size: 1.1rem; font-weight: 800; color: white; margin-top: 4px; }
+
+        .badge-status { font-size: 0.65rem; padding: 4px 10px; border-radius: 6px; font-weight: 800; text-transform: uppercase; }
+        .badge-agendado { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
+        .badge-aovivo { background: rgba(239, 68, 68, 0.2); color: var(--primary-red); border: 1px solid rgba(239, 68, 68, 0.4); }
+        .badge-finalizado { background: rgba(148, 163, 184, 0.1); color: var(--text-muted); border: 1px solid var(--border-color); }
+
+        .markets-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+
+        .market-item {
+            background: rgba(6, 9, 19, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .market-label { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; }
+
+        .btn-odd {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            font-weight: 800;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            min-width: 70px;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .btn-odd:hover, .btn-odd.active { background: var(--gold); color: #060913; box-shadow: 0 0 15px var(--gold-glow); }
+
+        .betslip-bar {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: rgba(6, 9, 19, 0.95);
+            backdrop-filter: blur(20px);
+            border-top: 2px solid var(--gold);
+            padding: 16px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            flex-wrap: wrap;
+            gap: 15px;
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.8);
+        }
+
+        .betslip-info { display: flex; gap: 25px; align-items: center; flex-wrap: wrap; }
+        .betslip-field-label { color: var(--text-muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; display: block; margin-bottom: 2px; }
+        .stake-input { width: 80px; background: var(--bg-surface); border: 1px solid var(--border-color); color: white; padding: 6px 10px; border-radius: 6px; font-weight: 700; }
+        .stake-input:focus { outline: none; border-color: var(--gold); }
+        .btn-clear { background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); padding: 8px 16px; cursor: pointer; border-radius: 8px; font-weight: 600; transition: var(--transition); }
+        .btn-clear:hover { border-color: var(--primary-red); color: var(--primary-red); }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2 style="color: var(--gold); display: flex; align-items: center; gap: 10px;">
-        <i class="fa-solid fa-database"></i> Base de Dados Centralizada
-    </h2>
+    <nav class="navbar">
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="switchTab('prognosticos', this)"><i class="fa-solid fa-calendar-days"></i> Época Completa</button>
+            <button class="tab-btn" onclick="switchTab('dashboard', this)"><i class="fa-solid fa-chart-line"></i> Challenge 10K</button>
+        </div>
+    </nav>
 
-    <!-- Filtros Avançados -->
-    <div style="margin: 20px 0;">
-        <select id="filterStatus" onchange="renderLista()" style="background: var(--bg-card); color: white; padding: 10px; border-radius: 8px;">
-            <option value="todos">Todos os Jogos</option>
-            <option value="hoje">Apenas Hoje</option>
-            <option value="finalizado">Histórico (Finalizados)</option>
-        </select>
-    </div>
+    <header class="header-banner">
+        <div class="header-logo-wrapper">
+            <img src="https://raw.githubusercontent.com/Kazper90/apostas/main/ViraFrangosLogo.jpg" alt="Vira Frangos Logo" class="header-logo" onerror="this.onerror=null; this.src='ViraFrangosLogo.jpg';">
+        </div>
+        <div class="header-subtitle"><i class="fa-solid fa-trophy"></i> Arquivo Completo da Época & Prognósticos</div>
+    </header>
 
-    <!-- Cabeçalho da Lista -->
-    <div class="match-row header-row">
-        <div>DATA</div><div>PARTIDA</div><div>COMPETIÇÃO</div><div>ESTADO</div>
-    </div>
-
-    <div id="listaCompleta"></div>
-</div>
-
-<script>
-    const baseDadosHistorica = [
-        { data: "14/08", equipas: "Arsenal vs Chelsea", liga: "Premier League", estado: "vivo" },
-        { data: "13/08", equipas: "Porto vs Benfica", liga: "Liga Portugal", estado: "finalizado" },
-        { data: "12/08", equipas: "Real Madrid vs Barça", liga: "La Liga", estado: "finalizado" }
-    ];
-
-    function renderLista() {
-        const filtro = document.getElementById('filterStatus').value;
-        const container = document.getElementById('listaCompleta');
-        container.innerHTML = '';
-
-        baseDadosHistorica.filter(j => filtro === 'todos' || j.estado === filtro).forEach(j => {
-            container.innerHTML += `
-                <div class="match-row">
-                    <div style="font-weight: 600;">${j.data}</div>
-                    <div style="font-weight: 700;">${j.equipas}</div>
-                    <div style="font-size: 0.85rem; color: var(--text-muted);">${j.liga}</div>
-                    <div><span class="badge ${j.estado === 'vivo' ? 'bg-vivo' : 'bg-finalizado'}">${j.estado}</span></div>
+    <main class="container">
+        <section id="prognosticos" class="tab-content active">
+            <h2 class="section-title"><i class="fa-solid fa-globe"></i> Base de Dados de Toda a Época</h2>
+            
+            <div class="controls-panel">
+                <input type="text" id="searchBox" class="search-input" placeholder="🔍 Pesquisar equipa, campeonato ou data (ex: Sporting, Premier League)..." oninput="filtrarDados()">
+                
+                <div class="filter-bar" id="ligaFilterBar">
+                    <button class="filter-btn active" onclick="setLiga('todas', this)">Todas as Ligas</button>
+                    <button class="filter-btn" onclick="setLiga('PT Liga Portugal', this)">PT Liga Portugal</button>
+                    <button class="filter-btn" onclick="setLiga('Premier League', this)">Premier League</button>
+                    <button class="filter-btn" onclick="setLiga('La Liga', this)">La Liga</button>
+                    <button class="filter-btn" onclick="setLiga('Serie A', this)">Serie A</button>
+                    <button class="filter-btn" onclick="setLiga('Champions League', this)">Champions League</button>
+                    <button class="filter-btn" onclick="setLiga('Copa Libertadores', this)">Copa Libertadores</button>
                 </div>
-            `;
-        });
-    }
+            </div>
 
-    renderLista();
-</script>
+            <div id="listaJogosContainer"></div>
+        </section>
 
+        <section id="dashboard" class="tab-content">
+            <div class="match-card">
+                <div class="match-header"><span class="league-title">Evolução do Challenge</span><span class="match-teams">Gráfico de Performance</span></div>
+                <div style="height: 250px;"><canvas id="chartEvolucao"></canvas></div>
+            </div>
+        </section>
+    </main>
+
+    <div class="betslip-bar">
+        <div class="betslip-info">
+            <div><span class="betslip-field-label">Seleções</span><span id="slipCount" style="font-weight: 800; color: white;">0 Jogo(s)</span></div>
+            <div><span class="betslip-field-label">Odd Total</span><span id="slipOdd" style="font-weight: 800; color: var(--gold);">1.00</span></div>
+            <div><span class="betslip-field-label">Stake (NOK)</span><input type="number" id="slipStake" value="50" class="stake-input" oninput="updateSlip()"></div>
+            <div><span class="betslip-field-label">Retorno Possível</span><span id="slipReturn" style="font-weight: 800; color: var(--green);">0.00 NOK</span></div>
+        </div>
+        <button class="btn-clear" onclick="clearSlip()"><i class="fa-solid fa-trash-can"></i> Limpar</button>
+    </div>
+
+    <script>
+        // BASE DE DADOS EXPANDIDA COM TODA A ÉPOCA CORRENTE
+        const épocaDatabase = [
+            { id: 1, data: "18/08/2026", liga: "Premier League", equipas: "Manchester City vs Newcastle United", estado: "agendado", opcoes: [{ label: "Casa (1)", odd: 1.50 }, { label: "Empate (X)", odd: 4.30 }, { label: "Fora (2)", odd: 6.00 }] },
+            { id: 2, data: "17/08/2026", liga: "PT Liga Portugal", equipas: "Sporting CP vs FC Porto", estado: "agendado", opcoes: [{ label: "Casa (1)", odd: 2.10 }, { label: "Empate (X)", odd: 3.20 }, { label: "Fora (2)", odd: 3.40 }] },
+            { id: 3, data: "16/08/2026", liga: "La Liga", equipas: "FC Barcelona vs Valencia CF", estado: "agendado", opcoes: [{ label: "Casa (1)", odd: 1.40 }, { label: "Empate (X)", odd: 4.80 }, { label: "Fora (2)", odd: 7.00 }] },
+            { id: 4, data: "15/08/2026", liga: "Serie A", equipas: "AS Roma vs Lazio", estado: "agendado", opcoes: [{ label: "Casa (1)", odd: 2.30 }, { label: "Empate (X)", odd: 3.10 }, { label: "Fora (2)", odd: 3.20 }] },
+            { id: 5, data: "14/08/2026", liga: "Copa Libertadores", equipas: "CA Rosario Central vs SC Corinthians Paulista", estado: "agendado", opcoes: [{ label: "Casa (1)", odd: 1.90 }, { label: "Empate (X)", odd: 3.40 }, { label: "Fora (2)", odd: 3.10 }] },
+            { id: 6, data: "14/08/2026", liga: "Premier League", equipas: "Arsenal vs Chelsea", estado: "aovivo", opcoes: [{ label: "Casa (1)", odd: 1.75 }, { label: "Empate (X)", odd: 3.60 }, { label: "Fora (2)", odd: 4.50 }] },
+            { id: 7, data: "14/08/2026", liga: "PT Liga Portugal", equipas: "Sporting CP vs Vitória SC", estado: "agendado", opcoes: [{ label: "Casa (1)", odd: 1.45 }, { label: "Empate (X)", odd: 4.20 }, { label: "Fora (2)", odd: 6.50 }] },
+            { id: 8, data: "13/08/2026", liga: "PT Liga Portugal", equipas: "FC Porto vs Benfica", estado: "finalizado", opcoes: [{ label: "Casa (1)", odd: 2.10 }, { label: "Empate (X)", odd: 3.20 }, { label: "Fora (2)", odd: 3.40 }] },
+            { id: 9, data: "13/08/2026", liga: "La Liga", equipas: "Real Madrid vs FC Barcelona", estado: "finalizado", opcoes: [{ label: "Casa (1)", odd: 2.25 }, { label: "Empate (X)", odd: 3.50 }, { label: "Fora (2)", odd: 2.90 }] },
+            { id: 10, data: "12/08/2026", liga: "Serie A", equipas: "AC Milan vs Inter de Milão", estado: "finalizado", opcoes: [{ label: "Casa (1)", odd: 2.70 }, { label: "Empate (X)", odd: 3.10 }, { label: "Fora (2)", odd: 2.65 }] },
+            { id: 11, data: "11/08/2026", liga: "Champions League", equipas: "Bayern de Munique vs Manchester City", estado: "finalizado", opcoes: [{ label: "Casa (1)", odd: 2.40 }, { label: "Empate (X)", odd: 3.60 }, { label: "Fora (2)", odd: 2.75 }] },
+            { id: 12, data: "10/08/2026", liga: "Premier League", equipas: "Liverpool vs Manchester United", estado: "finalizado", opcoes: [{ label: "Casa (1)", odd: 1.80 }, { label: "Empate (X)", odd: 3.80 }, { label: "Fora (2)", odd: 4.00 }] },
+            { id: 13, data: "05/08/2026", liga: "Premier League", equipas: "Brighton vs Tottenham", estado: "finalizado", opcoes: [{ label: "Casa (1)", odd: 2.50 }, { label: "Empate (X)", odd: 3.40 }, { label: "Fora (2)", odd: 2.70 }] },
+            { id: 14, data: "02/08/2026", liga: "La Liga", equipas: "Sevilla vs Real Betis", estado: "finalizado", opcoes: [{ label: "Casa (1)", odd: 2.10 }, { label: "Empate (X)", odd: 3.25 }, { label: "Fora (2)", odd: 3.50 }] }
+        ];
+
+        let selectedTips = [];
+        let ligaAtual = 'todas';
+
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            if (element) element.classList.add('active');
+        }
+
+        function setLiga(liga, element) {
+            ligaAtual = liga;
+            document.querySelectorAll('#ligaFilterBar .filter-btn').forEach(b => b.classList.remove('active'));
+            if (element) element.classList.add('active');
+            filtrarDados();
+        }
+
+        function filtrarDados() {
+            const query = document.getElementById('searchBox').value.toLowerCase();
+            const container = document.getElementById('listaJogosContainer');
+            container.innerHTML = '';
+
+            const filtrados = épocaDatabase.filter(j => {
+                const matchLiga = ligaAtual === 'todas' || j.liga === ligaAtual;
+                const matchQuery = j.equipas.toLowerCase().includes(query) || j.liga.toLowerCase().includes(query) || j.data.includes(query);
+                return matchLiga && matchQuery;
+            });
+
+            if (filtrados.length === 0) {
+                container.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 40px; font-weight: 600;">Nenhum jogo encontrado para esta pesquisa.</div>`;
+                return;
+            }
+
+            filtrados.forEach(j => {
+                let badgeClass = j.estado === 'aovivo' ? 'badge-aovivo' : (j.estado === 'agendado' ? 'badge-agendado' : 'badge-finalizado');
+                let badgeText = j.estado === 'aovivo' ? '🔴 Ao Vivo' : (j.estado === 'agendado' ? '📅 Agendado' : '✅ Finalizado');
+
+                let html = `
+                    <div class="match-card">
+                        <div class="match-header">
+                            <div>
+                                <span class="league-title"><i class="fa-solid fa-trophy" style="color: var(--gold);"></i> ${j.liga} &bull; ${j.data}</span>
+                                <div class="match-teams">${j.equipas}</div>
+                            </div>
+                            <span class="badge-status ${badgeClass}">${badgeText}</span>
+                        </div>
+                        <div class="markets-grid">
+                `;
+                j.opcoes.forEach(op => {
+                    let idAposta = `${j.id}-${op.label}`;
+                    let isSelected = selectedTips.some(s => s.id === idAposta);
+                    html += `
+                        <div class="market-item">
+                            <span class="market-label">${op.label}</span>
+                            <button class="btn-odd ${isSelected ? 'active' : ''}" onclick="toggleAposta('${idAposta}', '${j.equipas}', '${op.label}', ${op.odd})">${op.odd.toFixed(2)}</button>
+                        </div>
+                    `;
+                });
+                html += `</div></div>`;
+                container.innerHTML += html;
+            });
+        }
+
+        function toggleAposta(id, jogo, selecao, odd) {
+            const index = selectedTips.findIndex(item => item.id === id);
+            if (index > -1) {
+                selectedTips.splice(index, 1);
+            } else {
+                selectedTips.push({ id, jogo, selecao, odd });
+            }
+            filtrarDados();
+            updateSlip();
+        }
+
+        function updateSlip() {
+            const stake = parseFloat(document.getElementById('slipStake').value) || 0;
+            document.getElementById('slipCount').innerText = selectedTips.length + ' Jogo(s)';
+            if (selectedTips.length === 0) {
+                document.getElementById('slipOdd').innerText = '1.00';
+                document.getElementById('slipReturn').innerText = '0.00 NOK';
+                return;
+            }
+            let totalOdd = selectedTips.reduce((acc, item) => acc * item.odd, 1);
+            let totalReturn = totalOdd * stake;
+            document.getElementById('slipOdd').innerText = totalOdd.toFixed(2);
+            document.getElementById('slipReturn').innerText = totalReturn.toFixed(2) + ' NOK';
+        }
+
+        function clearSlip() {
+            selectedTips = [];
+            filtrarDados();
+            updateSlip();
+        }
+
+        window.onload = function() {
+            filtrarDados();
+            const ctx = document.getElementById('chartEvolucao').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Início', 'Ronda 1'],
+                    datasets: [{ data: [50, 50], borderColor: '#fbbf24', borderWidth: 3, tension: 0.4, fill: true, backgroundColor: 'rgba(251, 191, 36, 0.05)' }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+        };
+    </script>
 </body>
 </html>
