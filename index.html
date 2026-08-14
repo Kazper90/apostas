@@ -24,7 +24,7 @@
             color: var(--text-light);
             margin: 0;
             padding: 0;
-            padding-bottom: 95px;
+            padding-bottom: 100px;
         }
 
         .navbar {
@@ -49,35 +49,57 @@
             background: transparent;
             border: 1px solid var(--border);
             color: var(--text-muted);
-            padding: 10px 18px;
+            padding: 10px 20px;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s ease;
             font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .tab-btn:hover, .tab-btn.active {
             background: var(--primary-red);
             color: white;
             border-color: var(--primary-red);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
         }
 
-        .banner-container {
+        .header-banner {
             text-align: center;
-            padding: 20px 0 10px 0;
-            background: linear-gradient(to bottom, #090d16, var(--bg-color));
+            padding: 30px 20px 15px 20px;
+            background: linear-gradient(180deg, rgba(21, 28, 44, 0.8) 0%, rgba(11, 15, 25, 0) 100%);
             border-bottom: 1px solid var(--border);
         }
 
-        .banner-container img {
-            max-height: 70px;
-            object-fit: contain;
+        .header-banner h1 {
+            color: #ffffff;
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin: 0;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .header-banner h1 span {
+            color: var(--gold);
+        }
+
+        .header-subtitle {
+            font-size: 0.85rem;
+            color: var(--gold);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-top: 8px;
         }
 
         .container {
             max-width: 1100px;
-            margin: 20px auto;
+            margin: 25px auto;
             padding: 0 20px;
         }
 
@@ -86,9 +108,9 @@
 
         .grid-4 {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
             gap: 15px;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
         }
 
         .card {
@@ -96,18 +118,19 @@
             border: 1px solid var(--border);
             border-radius: 12px;
             padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
         }
 
         .card-title {
             color: var(--text-muted);
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 6px;
-            font-weight: 600;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+            font-weight: 700;
         }
 
-        .card-value { font-size: 1.6rem; font-weight: 800; }
+        .card-value { font-size: 1.7rem; font-weight: 800; }
         .gold { color: var(--gold); }
         .green { color: var(--green); }
         .blue { color: #38bdf8; }
@@ -117,24 +140,30 @@
             gap: 10px;
             margin-bottom: 20px;
             overflow-x: auto;
-            padding-bottom: 5px;
+            padding-bottom: 8px;
         }
 
         .filter-btn {
             background: var(--card-bg);
             border: 1px solid var(--border);
             color: var(--text-muted);
-            padding: 8px 16px;
+            padding: 8px 18px;
             border-radius: 20px;
             cursor: pointer;
             font-size: 0.85rem;
             white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--gold);
+            color: white;
         }
 
         .filter-btn.active {
             background: var(--gold);
             color: black;
-            font-weight: 700;
+            font-weight: 800;
             border-color: var(--gold);
         }
 
@@ -142,8 +171,13 @@
             background: var(--card-bg);
             border: 1px solid var(--border);
             border-radius: 14px;
-            padding: 18px;
+            padding: 20px;
             margin-bottom: 15px;
+            transition: border-color 0.2s;
+        }
+
+        .match-card:hover {
+            border-color: rgba(245, 158, 11, 0.4);
         }
 
         .match-header {
@@ -151,44 +185,44 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid var(--border);
-            padding-bottom: 10px;
-            margin-bottom: 12px;
+            padding-bottom: 12px;
+            margin-bottom: 15px;
         }
 
         .league-title {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 600;
+            letter-spacing: 1.5px;
+            font-weight: 700;
         }
 
         .match-teams {
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             font-weight: 700;
             color: white;
         }
 
         .markets-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 10px;
-            margin-top: 10px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
         }
 
         .market-item {
             background: #0d1321;
             border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 10px;
+            border-radius: 10px;
+            padding: 12px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
         .market-label {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: var(--text-muted);
+            font-weight: 600;
         }
 
         .btn-odd {
@@ -196,25 +230,32 @@
             border: 1px solid var(--gold);
             color: var(--gold);
             font-weight: 800;
-            padding: 6px 12px;
+            padding: 6px 14px;
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.2s;
+            font-size: 0.95rem;
         }
 
-        .btn-odd:hover, .btn-odd.active {
+        .btn-odd:hover {
+            background: rgba(245, 158, 11, 0.2);
+        }
+
+        .btn-odd.active {
             background: var(--gold);
             color: black;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
         }
 
         .ai-box {
             background: var(--card-bg);
             border: 1px solid var(--gold);
             border-radius: 16px;
-            padding: 25px;
+            padding: 30px;
             max-width: 700px;
             margin: 0 auto;
-            box-shadow: 0 0 25px rgba(245, 158, 11, 0.1);
+            box-shadow: 0 0 30px rgba(245, 158, 11, 0.15);
+            text-align: center;
         }
 
         .betslip-bar {
@@ -222,17 +263,31 @@
             bottom: 0; left: 0; right: 0;
             background: #090d16;
             border-top: 2px solid var(--gold);
-            padding: 12px 20px;
+            padding: 15px 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 1000;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.8);
+            box-shadow: 0 -5px 25px rgba(0,0,0,0.9);
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 15px;
         }
 
-        .betslip-info { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+        .betslip-info { 
+            display: flex; 
+            gap: 25px; 
+            align-items: center; 
+            flex-wrap: wrap; 
+        }
+
+        .betslip-field-label {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: block;
+            margin-bottom: 2px;
+        }
     </style>
 </head>
 <body>
@@ -246,31 +301,37 @@
         </div>
     </div>
 
-    <!-- BANNER / LOGÓTIPO & TÍTULO -->
-    <div class="banner-container">
-        <!-- Se tiveres uma imagem de logótipo, podes colocar aqui dentro da tag img (ex: src="logo.png") -->
-        <!-- <img src="logo.png" alt="Vira Frangos"> -->
-        <h1 style="color: #ffffff; font-size: 1.8rem; font-weight: 800; margin: 5px 0 15px 0; letter-spacing: 1.5px; text-transform: uppercase;">
-            O CHALLENGE DOS <span style="color: #f59e0b;">10K</span>
-        </h1>
-        <div style="font-size: 0.85rem; color: var(--gold); font-weight: 600; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;">
-            <i class="fa-solid fa-database"></i> Base de Dados Completa de Jogos
-        </div>
+    <!-- CABEÇALHO / BANNER VIRA FRANGOS -->
+    <div class="header-banner">
+        <h1>Vira Frangos <span>Challenge 10K</span></h1>
+        <div class="header-subtitle"><i class="fa-solid fa-fire"></i> Prognósticos & Gestão de Banca Profissional</div>
     </div>
 
     <div class="container">
 
         <!-- MÉTRICAS -->
         <div class="grid-4">
-            <div class="card"><div class="card-title">ROI Acumulado</div><div class="card-value gold">0,0%</div><div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">Início do Challenge</div></div>
-            <div class="card"><div class="card-title">Win Rate (%)</div><div class="card-value gold">0%</div><div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">Ronda #1 em curso</div></div>
-            <div class="card"><div class="card-title">Odd Total R1</div><div class="card-value blue">2.09</div><div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">Em jogo</div></div>
-            <div class="card"><div class="card-title">Lucro Total</div><div class="card-value gold">0,00 NOK</div><div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">A aguardar R1</div></div>
+            <div class="card">
+                <div class="card-title">ROI Acumulado</div>
+                <div class="card-value gold">0,0%</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Win Rate (%)</div>
+                <div class="card-value gold">0%</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Odd Total R1</div>
+                <div class="card-value blue">2.09</div>
+            </div>
+            <div class="card">
+                <div class="card-title">Lucro Total</div>
+                <div class="card-value gold">0,00 NOK</div>
+            </div>
         </div>
 
-        <!-- TAB 1: JOGOS -->
+        <!-- TAB 1: TODOS OS JOGOS -->
         <div id="prognosticos" class="tab-content active">
-            <h2 style="color: var(--gold); margin-bottom: 15px; font-size: 1.2rem;"><i class="fa-solid fa-futbol"></i> Jogos em Destaque & Odds Disponíveis</h2>
+            <h2 style="color: var(--gold); margin-bottom: 15px; font-size: 1.25rem;"><i class="fa-solid fa-futbol"></i> Jogos em Destaque & Odds Disponíveis</h2>
             
             <div class="filter-bar">
                 <button class="filter-btn active" onclick="filtrarLiga('todas', this)">Todas as Ligas</button>
@@ -284,31 +345,47 @@
             <div id="listaJogosContainer"></div>
         </div>
 
-        <!-- TAB 2: GERADOR -->
+        <!-- TAB 2: GERADOR DE MÚLTIPLAS -->
         <div id="gerador-multi" class="tab-content">
             <div class="ai-box">
-                <h2 style="margin-top: 0; text-align: center; color: var(--gold);">Gerador de Múltiplas</h2>
-                <button onclick="gerarMultiplaIA()" style="width: 100%; margin-top: 20px; background: var(--primary-red); border: none; color: white; padding: 14px; border-radius: 8px; font-weight: 800; cursor: pointer;">GERAR MÚLTIPLA</button>
-                <div id="genResult" style="display: none; margin-top: 20px; background: #0d1321; border: 1px solid var(--gold); border-radius: 12px; padding: 18px; color: white;"></div>
+                <h2 style="margin-top: 0; color: var(--gold); font-size: 1.6rem;"><i class="fa-solid fa-robot"></i> Gerador Inteligente de Múltiplas</h2>
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 25px;">Deixe o sistema escolher automaticamente as melhores seleções baseadas na nossa base de dados para otimizar o seu boletim.</p>
+                <button onclick="gerarMultiplaIA()" style="width: 100%; background: var(--primary-red); border: none; color: white; padding: 15px; border-radius: 10px; font-weight: 800; cursor: pointer; font-size: 1rem; box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4); transition: transform 0.2s;"><i class="fa-solid fa-bolt"></i> GERAR MÚLTIPLA AUTOMÁTICA</button>
+                <div id="genResult" style="display: none; margin-top: 25px; background: #0d1321; border: 1px solid var(--gold); border-radius: 12px; padding: 20px; color: white; text-align: left;"></div>
             </div>
         </div>
 
-        <!-- TAB 3: DASHBOARD -->
+        <!-- TAB 3: DASHBOARD / CHALLENGE -->
         <div id="dashboard" class="tab-content">
-            <div class="card"><div class="card-title">Evolução do Challenge</div><div style="height: 200px;"><canvas id="chartEvolucao"></canvas></div></div>
+            <div class="card">
+                <div class="card-title">Evolução Gráfica do Challenge</div>
+                <div style="height: 250px; margin-top: 15px;"><canvas id="chartEvolucao"></canvas></div>
+            </div>
         </div>
 
     </div>
 
-    <!-- BOLETIM -->
+    <!-- BOLETIM DE APOSTAS FIXO -->
     <div class="betslip-bar">
         <div class="betslip-info">
-            <div><span style="color: var(--text-muted); font-size: 0.75rem;">SELEÇÕES:</span> <span id="slipCount" style="font-weight: 800; color: white;">0 Jogos</span></div>
-            <div><span style="color: var(--text-muted); font-size: 0.75rem;">ODD TOTAL:</span> <span id="slipOdd" style="font-weight: 800; color: var(--gold);">1.00</span></div>
-            <div><span style="color: var(--text-muted); font-size: 0.75rem;">STAKE:</span> <input type="number" id="slipStake" value="50" style="width: 60px; background: #151c2c; border: 1px solid var(--border); color: white; padding: 4px;" oninput="updateSlip()"></div>
-            <div><span style="color: var(--text-muted); font-size: 0.75rem;">RETORNO:</span> <span id="slipReturn" style="font-weight: 800; color: var(--green);">0.00 NOK</span></div>
+            <div>
+                <span class="betslip-field-label">Seleções</span>
+                <span id="slipCount" style="font-weight: 800; color: white; font-size: 1.05rem;">0 Jogo(s)</span>
+            </div>
+            <div>
+                <span class="betslip-field-label">Odd Total</span>
+                <span id="slipOdd" style="font-weight: 800; color: var(--gold); font-size: 1.05rem;">1.00</span>
+            </div>
+            <div>
+                <span class="betslip-field-label">Stake (NOK)</span>
+                <input type="number" id="slipStake" value="50" style="width: 75px; background: #151c2c; border: 1px solid var(--border); color: white; padding: 6px; border-radius: 6px; font-weight: 700;" oninput="updateSlip()">
+            </div>
+            <div>
+                <span class="betslip-field-label">Retorno Possível</span>
+                <span id="slipReturn" style="font-weight: 800; color: var(--green); font-size: 1.05rem;">0.00 NOK</span>
+            </div>
         </div>
-        <button onclick="clearSlip()" style="background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 8px 12px; cursor: pointer; border-radius: 6px;">Limpar</button>
+        <button onclick="clearSlip()" style="background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 10px 18px; cursor: pointer; border-radius: 8px; font-weight: 600; transition: all 0.2s;"><i class="fa-solid fa-trash-can"></i> Limpar</button>
     </div>
 
     <script>
@@ -339,11 +416,23 @@
             const filtrados = jogosDatabase.filter(j => liga === 'todas' || j.liga === liga);
 
             filtrados.forEach(j => {
-                let html = `<div class="match-card"><div class="match-header"><span class="league-title">${j.liga}</span><span class="match-teams">${j.equipas}</span></div><div class="markets-grid">`;
+                let html = `
+                    <div class="match-card">
+                        <div class="match-header">
+                            <span class="league-title"><i class="fa-solid fa-trophy" style="color: var(--gold); margin-right: 5px;"></i> ${j.liga}</span>
+                            <span class="match-teams">${j.equipas}</span>
+                        </div>
+                        <div class="markets-grid">
+                `;
                 j.opcoes.forEach(op => {
                     let idAposta = `${j.equipas} - ${op.label}`;
                     let isSelected = selectedTips.some(s => s.id === idAposta);
-                    html += `<div class="market-item"><span class="market-label">${op.label}</span><button class="btn-odd ${isSelected ? 'active' : ''}" onclick="toggleAposta('${idAposta}', '${j.equipas}', '${op.label}', ${op.odd})">${op.odd.toFixed(2)}</button></div>`;
+                    html += `
+                        <div class="market-item">
+                            <span class="market-label">${op.label}</span>
+                            <button class="btn-odd ${isSelected ? 'active' : ''}" onclick="toggleAposta('${idAposta}', '${j.equipas}', '${op.label}', ${op.odd})">${op.odd.toFixed(2)}</button>
+                        </div>
+                    `;
                 });
                 html += `</div></div>`;
                 container.innerHTML += html;
@@ -396,8 +485,13 @@
             renderJogos(ligaAtual);
             updateSlip();
 
-            document.getElementById('genResult').style.display = 'block';
-            document.getElementById('genResult').innerHTML = `<b>Múltipla Gerada:</b><br>${randomMatch.equipas} (${randomOpt.label}) - Odd: ${randomOpt.odd}`;
+            const resDiv = document.getElementById('genResult');
+            resDiv.style.display = 'block';
+            resDiv.innerHTML = `
+                <div style="font-weight: 700; color: var(--gold); margin-bottom: 8px;"><i class="fa-solid fa-circle-check"></i> Sugestão Gerada com Sucesso:</div>
+                <div style="font-size: 0.95rem; color: white;"><b>${randomMatch.equipas}</b></div>
+                <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">Seleção: ${randomOpt.label} (Odd: <b>${randomOpt.odd.toFixed(2)}</b>)</div>
+            `;
         }
 
         window.onload = function() {
@@ -407,9 +501,24 @@
                 type: 'line',
                 data: {
                     labels: ['Início', 'Ronda 1'],
-                    datasets: [{ data: [50, 50], borderColor: '#f59e0b', tension: 0.3 }]
+                    datasets: [{ 
+                        data: [50, 50], 
+                        borderColor: '#f59e0b', 
+                        borderWidth: 3,
+                        tension: 0.3,
+                        fill: true,
+                        backgroundColor: 'rgba(245, 158, 11, 0.05)'
+                    }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } },
+                        y: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } }
+                    }
+                }
             });
         };
     </script>
