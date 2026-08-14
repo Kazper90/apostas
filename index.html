@@ -857,9 +857,46 @@
             `;
         }
 
-        window.onload = function() {
+       window.onload = async function() {
+            try {
+                const resposta = await fetch('/api/dashboard');
+                const dados = await resposta.json();
+
+                if(dados.banca) {
+                    document.querySelector('.card-value.gold').innerText = `${dados.banca.saldo_atual} NOK`;
+                }
+
+                const tbody = document.querySelector('tbody');
+                if(tbody && dados.apostas && dados.apostas.length > 0) {
+                    tbody.innerHTML = '';
+                    dados.apostas.forEach((aposta, index) => {
+                        let badgeClass = "badge-live";
+                        let estadoCor = "EM JOGO";
+                        if(aposta.estado === 'GANHA') { badgeClass = "badge-win"; estadoCor = "GANHA"; }
+                        if(aposta.estado === 'PERDIDA') { badgeClass = "badge-loss"; estadoCor = "PERDIDA"; }
+
+                        const retorno = (aposta.odd * aposta.stake).toFixed(2);
+
+                        tbody.innerHTML += `
+                            <tr>
+                                <td><b>#${index + 1}</b></td>
+                                <td>${new Date(aposta.data_jogo).toLocaleDateString('pt-PT')}</td>
+                                <td>• ${aposta.equipas} (${aposta.selecao})</td>
+                                <td><b>${aposta.odd}</b></td>
+                                <td>${aposta.stake} NOK</td>
+                                <td>${retorno} NOK</td>
+                                <td><span class="${badgeClass}">${estadoCor}</span></td>
+                            </tr>
+                        `;
+                    });
+                }
+            } catch (erro) {
+                console.error("Erro ao carregar dados do servidor:", erro);
+            }
+
             renderJogos('todas');
             updateSlip();
+            
             const ctx = document.getElementById('chartEvolucao').getContext('2d');
             new Chart(ctx, {
                 type: 'line',
