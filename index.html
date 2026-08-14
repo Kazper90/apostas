@@ -325,11 +325,11 @@
             <h2 style="color: var(--gold); margin-bottom: 10px;"><i class="fa-solid fa-futbol"></i> Jogos em Destaque &amp; Odds Disponíveis</h2>
             
             <div class="filter-bar">
-              <button class="filter-btn active" onclick="filtrarLiga('todas', this)">Todas as Ligas</button>
-<button class="filter-btn" onclick="filtrarLiga('Liga Portugal', this)">PT Liga Portugal</button>
-<button class="filter-btn" onclick="filtrarLiga('Premier League', this)">Premier League</button>
-<button class="filter-btn" onclick="filtrarLiga('La Liga', this)">La Liga</button>
-<button class="filter-btn" onclick="filtrarLiga('Outras Ligas', this)">Outras Ligas</button>
+                <button class="filter-btn active" onclick="filtrarLiga('todas', this)">Todas as Ligas</button>
+                <button class="filter-btn" onclick="filtrarLiga('Liga Portugal', this)">PT Liga Portugal</button>
+                <button class="filter-btn" onclick="filtrarLiga('Premier League', this)">Premier League</button>
+                <button class="filter-btn" onclick="filtrarLiga('La Liga', this)">La Liga</button>
+                <button class="filter-btn" onclick="filtrarLiga('Outras Ligas', this)">Outras Ligas</button>
             </div>
 
             <div id="listaJogosContainer">
@@ -491,74 +491,92 @@
     </div>
 
     <script>
-        // BASE DE DADOS DE JOGOS REAIS
         let jogosDatabase = [];
-         async function carregarJogosDaAPI() {
-    try {
-        const res = await fetch('/api/matches');
-        const data = await res.json();
-        
-        // Garante que o jogosDatabase recebe sempre um array, seja qual for o formato da resposta
-        if (Array.isArray(data)) {
-            jogosDatabase = data;
-        } else if (data && Array.isArray(data.matches)) {
-            jogosDatabase = data.matches;
-        } else if (data && Array.isArray(data.jogos)) {
-            jogosDatabase = data.jogos;
-        } else {
-            jogosDatabase = [];
-            console.warn("Nenhum jogo retornado da API.");
-        }
-    } catch (e) {
-        console.error("Erro ao conectar à API:", e);
-        jogosDatabase = [];
-    } finally {
-        renderJogos('todas');
-        if (typeof popularSelectIA === 'function') popularSelectIA();
-    }
-}
-} 
-
         let selectedTips = [];
+        let ligaAtual = 'todas';
+
+        async function carregarJogosDaAPI() {
+            try {
+                const res = await fetch('/api/matches');
+                const data = await res.json();
+                
+                if (Array.isArray(data)) {
+                    jogosDatabase = data;
+                } else if (data && Array.isArray(data.matches)) {
+                    jogosDatabase = data.matches;
+                } else if (data && Array.isArray(data.jogos)) {
+                    jogosDatabase = data.jogos;
+                } else {
+                    jogosDatabase = [];
+                    console.warn("Nenhum jogo retornado da API.");
+                }
+            } catch (e) {
+                console.error("Erro ao conectar à API:", e);
+                jogosDatabase = [];
+            } finally {
+                renderJogos(ligaAtual);
+                if (typeof popularSelectIA === 'function') popularSelectIA();
+            }
+        }
 
         function renderJogos(liga = 'todas') {
+            ligaAtual = liga;
             const container = document.getElementById('listaJogosContainer');
+            if (!container) return;
             container.innerHTML = '';
 
-            const filtrados = liga === 'todas' ? jogosDatabase : jogosDatabase.filter(j => j.liga === liga);
+            if (!Array.isArray(jogosDatabase) || jogosDatabase.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 20px;">Nenhum jogo disponível de momento.</p>';
+                return;
+            }
+
+            const filtrados = jogosDatabase.filter(j => {
+                if (liga === 'todas') return true;
+                const jLiga = (j.liga || '').toLowerCase();
+                const filtro = liga.toLowerCase();
+                return jLiga.includes(filtro) || filtro.includes(jLiga);
+            });
+
+            if (filtrados.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 20px;">Nenhum jogo encontrado para esta liga.</p>';
+                return;
+            }
 
             filtrados.forEach(j => {
                 let html = `
                     <div class="match-card">
                         <div class="match-header">
-                            <span class="league-title">${j.liga}</span>
-                            <span class="match-teams">${j.equipas}</span>
+                            <span class="league-title">${j.liga || 'Futebol'}</span>
+                            <span class="match-teams">${j.equipas || 'Equipa A vs Equipa B'}</span>
                         </div>
                         <div class="markets-grid">
                 `;
 
-                j.opcoes.forEach(op => {
-                    const idAposta = `${j.equipas} - ${op.label}`;
-                    const isSelected = selectedTips.some(s => s.id === idAposta);
-                    html += `
-                        <div class="market-item">
-                            <span class="market-label">${op.label}</span>
-                            <button class="btn-odd ${isSelected ? 'active' : ''}" onclick="toggleAposta('${idAposta}', '${j.equipas}', '${op.label}', ${op.odd})">${op.odd.toFixed(2)}</button>
-                        </div>
-                    `;
-                });
+                if (Array.isArray(j.opcoes)) {
+                    j.opcoes.forEach(op => {
+                        const idAposta = `${j.equipas} - ${op.label}`;
+                        const isSelected = selectedTips.some(s => s.id === idAposta);
+                        html += `
+                            <div class="market-item">
+                                <span class="market-label">${op.label}</span>
+                                <button class="btn-odd ${isSelected ? 'active' : ''}" onclick="toggleAposta('${idAposta}', '${j.equipas}', '${op.label}', ${op.odd})">${op.odd.toFixed(2)}</button>
+                            </div>
+                        `;
+                    });
+                }
 
                 html += `</div></div>`;
                 container.innerHTML += html;
             });
         }
-function filtrarLiga(liga, element) {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    if (element) {
-        element.classList.add('active');
-    }
-    renderJogos(liga);
-}
+
+        function filtrarLiga(liga, element) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            if (element) {
+                element.classList.add('active');
+            }
+            renderJogos(liga);
+        }
        
         function toggleAposta(id, jogo, selecao, odd) {
             const index = selectedTips.findIndex(item => item.id === id);
@@ -567,7 +585,7 @@ function filtrarLiga(liga, element) {
             } else {
                 selectedTips.push({ id, jogo, selecao, name: `${jogo} (${selecao})`, odd });
             }
-            renderJogos('todas');
+            renderJogos(ligaAtual);
             updateSlip();
         }
 
@@ -587,7 +605,7 @@ function filtrarLiga(liga, element) {
 
         function clearSlip() {
             selectedTips = [];
-            renderJogos('todas');
+            renderJogos(ligaAtual);
             updateSlip();
         }
 
@@ -599,15 +617,17 @@ function filtrarLiga(liga, element) {
 
             let pool = [];
             jogosDatabase.forEach(j => {
-                if (profile === 'safe') pool.push({ id: `${j.equipas} - ${j.opcoes[0].label}`, jogo: j.equipas, selecao: j.opcoes[0].label, name: `${j.equipas} (${j.opcoes[0].label})`, odd: j.opcoes[0].odd });
-                else if (profile === 'med') pool.push({ id: `${j.equipas} - ${j.opcoes[0].label}`, jogo: j.equipas, selecao: j.opcoes[0].label, name: `${j.equipas} (${j.opcoes[0].label})`, odd: j.opcoes[0].odd });
-                else pool.push({ id: `${j.equipas} - HC`, jogo: j.equipas, selecao: j.opcoes[j.opcoes.length-1].label, name: `${j.equipas} (${j.opcoes[j.opcoes.length-1].label})`, odd: j.opcoes[j.opcoes.length-1].odd });
+                if (j.opcoes && j.opcoes.length > 0) {
+                    if (profile === 'safe') pool.push({ id: `${j.equipas} - ${j.opcoes[0].label}`, jogo: j.equipas, selecao: j.opcoes[0].label, name: `${j.equipas} (${j.opcoes[0].label})`, odd: j.opcoes[0].odd });
+                    else if (profile === 'med') pool.push({ id: `${j.equipas} - ${j.opcoes[0].label}`, jogo: j.equipas, selecao: j.opcoes[0].label, name: `${j.equipas} (${j.opcoes[0].label})`, odd: j.opcoes[0].odd });
+                    else pool.push({ id: `${j.equipas} - HC`, jogo: j.equipas, selecao: j.opcoes[j.opcoes.length-1].label, name: `${j.equipas} (${j.opcoes[j.opcoes.length-1].label})`, odd: j.opcoes[j.opcoes.length-1].odd });
+                }
             });
 
             let escolhas = pool.sort(() => 0.5 - Math.random()).slice(0, numGames);
             escolhas.forEach(p => selectedTips.push(p));
 
-            renderJogos('todas');
+            renderJogos(ligaAtual);
             updateSlip();
 
             let totalOdd = selectedTips.reduce((acc, item) => acc * item.odd, 1).toFixed(2);
@@ -618,6 +638,7 @@ function filtrarLiga(liga, element) {
         // CARREGAR JOGOS NA IA PREDICTOR
         function popularSelectIA() {
             const select = document.getElementById('aiSelectMatch');
+            if (!select) return;
             select.innerHTML = '';
             jogosDatabase.forEach(j => {
                 select.innerHTML += `<option value="${j.id}">${j.equipas} (${j.liga})</option>`;
@@ -626,12 +647,16 @@ function filtrarLiga(liga, element) {
         }
 
         function carregarJogoNaIA() {
-            const idSelected = parseInt(document.getElementById('aiSelectMatch').value);
+            const selectId = document.getElementById('aiSelectMatch');
+            if (!selectId) return;
+            const idSelected = parseInt(selectId.value);
             const jogo = jogosDatabase.find(j => j.id === idSelected);
             if (jogo) {
-                document.getElementById('aiHome').value = jogo.hRating;
-                document.getElementById('aiAway').value = jogo.aRating;
-                document.getElementById('aiOdd').value = jogo.opcoes[0].odd;
+                document.getElementById('aiHome').value = jogo.hRating || 8;
+                document.getElementById('aiAway').value = jogo.aRating || 5;
+                if (jogo.opcoes && jogo.opcoes[0]) {
+                    document.getElementById('aiOdd').value = jogo.opcoes[0].odd;
+                }
             }
         }
 
@@ -664,7 +689,9 @@ function filtrarLiga(liga, element) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
-            event.currentTarget.classList.add('active');
+            if (event && event.currentTarget) {
+                event.currentTarget.classList.add('active');
+            }
         }
 
         // MODAL STORY
@@ -685,26 +712,36 @@ function filtrarLiga(liga, element) {
         }
 
         // INICIALIZAÇÃO
-        // INICIALIZAÇÃO
-carregarJogosDaAPI();
+        carregarJogosDaAPI();
 
         // GRÁFICO
-        const ctx = document.getElementById('chartEvolucao').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Start', 'R1', 'R2', 'R3', 'R4', 'R5', 'R6', 'R7', 'R8', 'R9', 'R10'],
-                datasets: [{
-                    label: 'Projeção (Odd ~1.70)',
-                    data: [50, 85, 145, 245, 415, 700, 1200, 2000, 3500, 6000, 10000],
-                    borderColor: '#dc2626',
-                    backgroundColor: 'rgba(220, 38, 38, 0.1)',
-                    fill: true,
-                    tension: 0.3
-                }]
-            },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-        });
+        const ctxEl = document.getElementById('chartEvolucao');
+        if (ctxEl) {
+            const ctx = ctxEl.getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Start', 'R1', 'R2', 'R3', 'R4', 'R5', 'R6', 'R7', 'R8', 'R9', 'R10'],
+                    datasets: [{
+                        label: 'Projeção (Odd ~1.70)',
+                        data: [1000, 1700, 2890, 4913, 8352, 10000],
+                        borderColor: '#f59e0b',
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } },
+                        x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+                    }
+                }
+            });
+        }
     </script>
 </body>
 </html>
