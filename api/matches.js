@@ -24,26 +24,35 @@ export default async function handler(req, res) {
     }
 
     const data = await apiRes.json();
-    
-    // Mapeia e formata os jogos recebidos para o formato que o index.html precisa
-    const matchesFormatados = (data.matches || []).slice(0, 15).map((m, index) => {
+    const rawMatches = data.matches || [];
+
+    // Mapeamento limpo para o front-end reconhecer as ligas (PL, PPD, PPL, etc.)
+    const matches = rawMatches.map((m, index) => {
+      const code = m.competition?.code || '';
+      let ligaCat = 'Outras Ligas';
+      
+      if (code === 'PPL') ligaCat = 'Liga Portugal';
+      else if (code === 'PL') ligaCat = 'Premier League';
+      else if (code === 'PD') ligaCat = 'La Liga';
+
       return {
         id: m.id || index + 1,
-        liga: m.competition?.name || "Liga Principal",
-        ligaCode: m.competition?.code || "OUTRAS",
-        home: m.homeTeam?.name || "Equipa Casa",
-        away: m.awayTeam?.name || "Equipa Fora",
-        data: m.utcDate ? new Date(m.utcDate).toLocaleDateString('pt-PT') : 'Hoje',
-        hora: m.utcDate ? new Date(m.utcDate).toLocaleTimeString('pt-PT', {hour: '2-digit', minute:'2-digit'}) : '20:00',
+        liga: m.competition?.name || 'Futebol Internacional',
+        ligaCategory: ligaCat,
+        home: m.homeTeam?.name || 'Equipa Casa',
+        away: m.awayTeam?.name || 'Equipa Fora',
+        date: m.utcDate ? new Date(m.utcDate).toLocaleDateString('pt-PT') : 'Hoje',
+        time: m.utcDate ? new Date(m.utcDate).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' }) : '20:00',
         odds: {
-          home: (1.50 + (index % 5) * 0.25).toFixed(2),
-          draw: (3.10 + (index % 3) * 0.20).toFixed(2),
-          away: (2.10 + (index % 4) * 0.30).toFixed(2)
+          home: parseFloat((1.50 + (index % 5) * 0.22).toFixed(2)),
+          draw: parseFloat((3.10 + (index % 3) * 0.25).toFixed(2)),
+          away: parseFloat((2.10 + (index % 4) * 0.35).toFixed(2))
         }
       };
     });
 
-    return res.status(200).json(matchesFormatados);
+    // Retorna a estrutura que o front-end espera
+    return res.status(200).json({ matches: matches });
   } catch (error) {
     return res.status(500).json({ error: error.message || 'Erro interno no servidor' });
   }
