@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vira Frangos — Challenge 10K & Gerador de Múltiplas</title>
+    <title>Vira Frangos — Central de Prognósticos & Gerador de Múltiplas IA</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -24,7 +24,7 @@
             color: var(--text-light);
             margin: 0;
             padding: 0;
-            padding-bottom: 90px;
+            padding-bottom: 95px;
         }
 
         .navbar {
@@ -101,77 +101,101 @@
         .red { color: var(--primary-red); }
         .blue { color: #38bdf8; }
 
-        /* CARDS DE DICAS */
-        .tip-card {
+        /* JOGOS E FILTROS */
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .filter-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+
+        .filter-btn.active {
+            background: var(--gold);
+            color: black;
+            font-weight: 700;
+            border-color: var(--gold);
+        }
+
+        .match-card {
             background: var(--card-bg);
             border: 1px solid var(--border);
             border-radius: 14px;
-            padding: 20px;
-            margin-bottom: 20px;
+            padding: 18px;
+            margin-bottom: 15px;
         }
 
-        .tip-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 12px;
-        }
-
-        .match-title {
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: white;
-        }
-
-        .risk-badge {
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .risk-low { background: rgba(16, 185, 129, 0.15); color: var(--green); border: 1px solid var(--green); }
-        .risk-med { background: rgba(245, 158, 11, 0.15); color: var(--gold); border: 1px solid var(--gold); }
-
-        .tip-body {
+        .match-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            margin-bottom: 12px;
         }
 
-        .tip-selection { font-size: 1rem; color: var(--gold); font-weight: 700; }
-        .tip-reason { font-size: 0.88rem; color: var(--text-muted); margin-top: 6px; font-style: italic; }
+        .league-title {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
 
-        .odds-container { display: flex; gap: 10px; align-items: center; }
+        .match-teams {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: white;
+        }
 
-        .odd-badge {
+        .markets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .market-item {
             background: #0d1321;
             border: 1px solid var(--border);
-            padding: 8px 12px;
             border-radius: 8px;
-            text-align: center;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .odd-label { font-size: 0.7rem; color: var(--text-muted); display: block; }
-        .odd-val { font-size: 1rem; font-weight: 800; color: white; }
+        .market-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
 
-        .btn-add-slip {
-            background: var(--primary-red);
-            border: none;
-            color: white;
-            padding: 10px 16px;
-            border-radius: 8px;
-            font-weight: 700;
+        .btn-odd {
+            background: #1e293b;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            font-weight: 800;
+            padding: 6px 12px;
+            border-radius: 6px;
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.2s;
         }
 
-        .btn-add-slip:hover { background: #b91c1c; }
+        .btn-odd:hover, .btn-odd.active {
+            background: var(--gold);
+            color: black;
+        }
 
         /* BOXES DE IA E GERADOR */
         .ai-box {
@@ -252,10 +276,6 @@
         }
 
         .faq-content { padding: 0 20px 15px 20px; color: var(--text-muted); font-size: 0.9rem; display: none; }
-
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; text-align: left; }
-        th, td { padding: 12px 15px; border-bottom: 1px solid var(--border); }
-        th { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; }
     </style>
 </head>
 <body>
@@ -263,7 +283,7 @@
     <!-- NAVBAR -->
     <div class="navbar">
         <div class="nav-tabs">
-            <button class="tab-btn active" onclick="switchTab('prognosticos')"><i class="fa-solid fa-bullseye"></i> Dicas do Dia</button>
+            <button class="tab-btn active" onclick="switchTab('prognosticos')"><i class="fa-solid fa-list-check"></i> Todos os Jogos</button>
             <button class="tab-btn" onclick="switchTab('gerador-multi')"><i class="fa-solid fa-wand-magic-sparkles" style="color: var(--gold);"></i> Gerador Múltiplas</button>
             <button class="tab-btn" onclick="switchTab('ia-predictor')"><i class="fa-solid fa-robot"></i> IA Predictor</button>
             <button class="tab-btn" onclick="switchTab('dashboard')"><i class="fa-solid fa-chart-line"></i> Challenge 10K</button>
@@ -271,22 +291,22 @@
         </div>
     </div>
 
-    <!-- CABEÇALHO COM LOGÓTIPO -->
+    <!-- CABEÇALHO -->
     <div style="text-align: center; padding: 25px 0 10px 0;">
         <img src="ViraFrangosLogo.jpg" alt="Logo Vira Frangos" style="width: 210px; height: auto; object-fit: contain; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); margin-bottom: 12px;">
         <div>
             <span style="display: inline-block; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #f59e0b; padding: 4px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px;">
-                <i class="fa-solid fa-fire" style="margin-right: 6px; color: #dc2626;"></i> Plataforma Oficial de Prognósticos
+                <i class="fa-solid fa-fire" style="margin-right: 6px; color: #dc2626;"></i> Base de Dados Completa de Jogos
             </span>
         </div>
-        <h1 style="color: #ffffff; font-family: 'Segoe UI', system-ui, sans-serif; font-size: 1.8rem; font-weight: 800; margin: 0; letter-spacing: 1.5px; text-transform: uppercase;">
+        <h1 style="color: #ffffff; font-size: 1.8rem; font-weight: 800; margin: 0; letter-spacing: 1.5px; text-transform: uppercase;">
             O CHALLENGE DOS <span style="color: #f59e0b;">10K</span>
         </h1>
     </div>
 
     <div class="container">
 
-        <!-- METRICAS DO TOP -->
+        <!-- METRICAS -->
         <div class="grid-4">
             <div class="card"><div class="card-title">ROI Acumulado</div><div class="card-value green">+24,8%</div></div>
             <div class="card"><div class="card-title">Win Rate (%)</div><div class="card-value gold">78%</div></div>
@@ -294,74 +314,28 @@
             <div class="card"><div class="card-title">Lucro Total</div><div class="card-value gold">+155,20 NOK</div></div>
         </div>
 
-        <!-- TAB 1: DICAS DO DIA -->
+        <!-- TAB 1: LISTA COMPLETA DE JOGOS -->
         <div id="prognosticos" class="tab-content active">
-            <h2 style="color: var(--gold); margin-bottom: 5px;"><i class="fa-solid fa-star"></i> Análises &amp; Seleções do Dia</h2>
-            <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.9rem;">Clica em "+ Adicionar" para montar a tua aposta múltipla no fundo.</p>
-
-            <!-- DICA 1 -->
-            <div class="tip-card">
-                <div class="tip-header">
-                    <div class="match-title">⚽ Sporting CP vs Vitória SC</div>
-                    <span class="risk-badge risk-low"><i class="fa-solid fa-shield-halved"></i> Baixo Risco (Confiança 88%)</span>
-                </div>
-                <div class="tip-body">
-                    <div>
-                        <div class="tip-selection"><i class="fa-solid fa-circle-check"></i> Resultado Final: Vitória do Sporting CP</div>
-                        <div class="tip-reason">"Sporting imbatível em Alvalade com média de 2.8 golos marcados por jogo."</div>
-                    </div>
-                    <div class="odds-container">
-                        <div class="odd-badge"><span class="odd-label">Betclic</span><span class="odd-val">1.35</span></div>
-                        <div class="odd-badge"><span class="odd-label">Norsk Tipping</span><span class="odd-val">1.32</span></div>
-                        <button class="btn-add-slip" onclick="toggleSelection('Sporting CP vs Vitória SC', 1.35)"><i class="fa-solid fa-plus"></i> Adicionar</button>
-                    </div>
-                </div>
+            <h2 style="color: var(--gold); margin-bottom: 10px;"><i class="fa-solid fa-futbol"></i> Jogos do Dia &amp; Odds Disponíveis</h2>
+            
+            <div class="filter-bar">
+                <button class="filter-btn active" onclick="filtrarLiga('todas')">Todas as Ligas</button>
+                <button class="filter-btn" onclick="filtrarLiga('Portugal')">🇵🇹 Liga Portugal</button>
+                <button class="filter-btn" onclick="filtrarLiga('Inglaterra')">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League</button>
+                <button class="filter-btn" onclick="filtrarLiga('Espanha')">🇪🇸 La Liga</button>
+                <button class="filter-btn" onclick="filtrarLiga('Outras')">🌍 Outras Ligas</button>
             </div>
 
-            <!-- DICA 2 -->
-            <div class="tip-card">
-                <div class="tip-header">
-                    <div class="match-title">⚽ Telstar vs Sparta Rotterdam</div>
-                    <span class="risk-badge risk-med"><i class="fa-solid fa-triangle-exclamation"></i> Risco Moderado (Confiança 72%)</span>
-                </div>
-                <div class="tip-body">
-                    <div>
-                        <div class="tip-selection"><i class="fa-solid fa-circle-check"></i> Ambas Marcam: SIM</div>
-                        <div class="tip-reason">"Ambas as equipas concedem golos há 6 jogos consecutivos na liga."</div>
-                    </div>
-                    <div class="odds-container">
-                        <div class="odd-badge"><span class="odd-label">Betclic</span><span class="odd-val">1.62</span></div>
-                        <div class="odd-badge"><span class="odd-label">Norsk Tipping</span><span class="odd-val">1.60</span></div>
-                        <button class="btn-add-slip" onclick="toggleSelection('Telstar vs Sparta Rotterdam', 1.62)"><i class="fa-solid fa-plus"></i> Adicionar</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- DICA 3 -->
-            <div class="tip-card">
-                <div class="tip-header">
-                    <div class="match-title">⚽ Galatasaray vs Çorum FK</div>
-                    <span class="risk-badge risk-low"><i class="fa-solid fa-shield-halved"></i> Baixo Risco (Confiança 85%)</span>
-                </div>
-                <div class="tip-body">
-                    <div>
-                        <div class="tip-selection"><i class="fa-solid fa-circle-check"></i> Galatasaray Handicap -1.5</div>
-                        <div class="tip-reason">"Diferença gritante de plantéis na Taça da Turquia."</div>
-                    </div>
-                    <div class="odds-container">
-                        <div class="odd-badge"><span class="odd-label">Betclic</span><span class="odd-val">1.45</span></div>
-                        <div class="odd-badge"><span class="odd-label">Norsk Tipping</span><span class="odd-val">1.42</span></div>
-                        <button class="btn-add-slip" onclick="toggleSelection('Galatasaray vs Çorum FK', 1.45)"><i class="fa-solid fa-plus"></i> Adicionar</button>
-                    </div>
-                </div>
+            <div id="listaJogosContainer">
+                <!-- Injetado dinamicamente via JS -->
             </div>
         </div>
 
-        <!-- TAB NOVO: GERADOR AUTOMÁTICO DE MÚLTIPLAS (ESTILO APP GOOGLE STORE) -->
+        <!-- TAB 2: GERADOR AUTOMÁTICO DE MÚLTIPLAS -->
         <div id="gerador-multi" class="tab-content">
             <div class="ai-box">
                 <h2 style="margin-top: 0; text-align: center; color: var(--gold);"><i class="fa-solid fa-wand-magic-sparkles"></i> Gerador de Múltiplas com IA</h2>
-                <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 25px;">Define o teu perfil e a IA escolhe e monta o bilhete ideal automaticamente para ti!</p>
+                <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 25px;">A IA varre todos os jogos da base de dados para criar a combinação ideal.</p>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                     <div>
@@ -369,32 +343,40 @@
                         <select id="genGames" class="form-control">
                             <option value="2">2 Jogos (Dupla)</option>
                             <option value="3" selected>3 Jogos (Tripla)</option>
+                            <option value="4">4 Jogos (Quádrula)</option>
                         </select>
                     </div>
                     <div>
                         <label style="color: var(--text-muted); font-size: 0.85rem;">Perfil de Odd Pretendida:</label>
                         <select id="genTarget" class="form-control">
-                            <option value="safe">Conservadora (Odd ~2.00 - 2.20)</option>
-                            <option value="med" selected>Equilibrada (Odd ~3.00 - 3.50)</option>
-                            <option value="bold">Bomba / Arriscada (Odd ~5.00+)</option>
+                            <option value="safe">Conservadora (Odd ~2.00 - 2.50)</option>
+                            <option value="med" selected>Equilibrada (Odd ~3.50 - 4.50)</option>
+                            <option value="bold">Bomba / Arriscada (Odd ~6.00+)</option>
                         </select>
                     </div>
                 </div>
 
-                <button onclick="gerarMultiplaIA()" style="width: 100%; margin-top: 20px; background: var(--primary-red); border: none; color: white; padding: 14px; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 1rem;"><i class="fa-solid fa-bolt"></i> GERAR &amp; ADICIONAR AO BOLETIM</button>
+                <button onclick="gerarMultiplaIA()" style="width: 100%; margin-top: 20px; background: var(--primary-red); border: none; color: white; padding: 14px; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 1rem;"><i class="fa-solid fa-bolt"></i> GERAR MÚLTIPLA AUTOMÁTICA</button>
 
                 <div id="genResult" style="display: none; margin-top: 20px; background: #0d1321; border: 1px solid var(--gold); border-radius: 12px; padding: 18px; text-align: center;">
-                    <div style="color: var(--gold); font-weight: 800; font-size: 1rem; margin-bottom: 10px;">🎉 Múltipla Gerada com Sucesso!</div>
+                    <div style="color: var(--gold); font-weight: 800; font-size: 1rem; margin-bottom: 10px;">🎉 Múltipla Otimizada Criada!</div>
                     <div id="genDetails" style="font-size: 0.9rem; color: white; text-align: left; line-height: 1.6;"></div>
                 </div>
             </div>
         </div>
 
-        <!-- TAB 3: IA PREDICTOR -->
+        <!-- TAB 3: IA PREDICTOR COM SELEÇÃO DE JOGOS -->
         <div id="ia-predictor" class="tab-content">
             <div class="ai-box">
                 <h2 style="margin-top: 0; text-align: center; color: var(--gold);"><i class="fa-solid fa-robot"></i> ViraFrangos AI Predictor 2.0</h2>
-                <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">Algoritmo de cálculo de probabilidades de jogo e odd justa.</p>
+                <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">Escolhe um jogo da lista para calcular as probabilidades exatas.</p>
+
+                <div style="margin-bottom: 15px;">
+                    <label style="color: var(--text-muted); font-size: 0.85rem;">Seleciona o Jogo a Analisar:</label>
+                    <select id="aiSelectMatch" class="form-control" onchange="carregarJogoNaIA()">
+                        <!-- Opções preenchidas por JS -->
+                    </select>
+                </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                     <div><label style="color: var(--text-muted); font-size: 0.85rem;">Força Casa (1-10):</label><input type="number" id="aiHome" class="form-control" value="8" min="1" max="10"></div>
@@ -402,7 +384,7 @@
                 </div>
 
                 <div style="margin-top: 15px;">
-                    <label style="color: var(--text-muted); font-size: 0.85rem;">Odd Oferecida pela Casa de Apostas:</label>
+                    <label style="color: var(--text-muted); font-size: 0.85rem;">Odd Oferecida pela Casa:</label>
                     <input type="number" id="aiOdd" class="form-control" value="1.45" step="0.01">
                 </div>
 
@@ -430,12 +412,8 @@
         <div id="faq" class="tab-content">
             <h2 style="color: var(--gold);"><i class="fa-solid fa-circle-question"></i> Perguntas Frequentes</h2>
             <div class="faq-item">
-                <button class="faq-btn" onclick="toggleFaq(this)"><span>Como funciona a Gestão de Banca?</span> <i class="fa-solid fa-chevron-down"></i></button>
-                <div class="faq-content">Usamos uma gestão rigorosa entre 3% a 5% da banca por aposta em dias normais, e um plano progressivo no Challenge. Nunca apostes dinheiro de emergência.</div>
-            </div>
-            <div class="faq-item">
                 <button class="faq-btn" onclick="toggleFaq(this)"><span>Como funciona o Gerador de Múltiplas?</span> <i class="fa-solid fa-chevron-down"></i></button>
-                <div class="faq-content">O algoritmo analisa os jogos com maior valor estatístico no dia e constrói a múltipla otimizada de acordo com o teu objetivo de odd.</div>
+                <div class="faq-content">O algoritmo analisa as probabilidades de todos os jogos disponíveis e seleciona a melhor combinação para atingir o teu objetivo de odd.</div>
             </div>
         </div>
 
@@ -455,16 +433,16 @@
         </div>
     </div>
 
-    <!-- MODAL GERADOR DE INSTAGRAM STORY -->
+    <!-- MODAL STORY -->
     <div id="modalStory" class="modal-overlay">
         <div class="story-card">
             <img src="ViraFrangosLogo.jpg" style="width: 80px; border-radius: 10px; margin-bottom: 10px;">
             <h3 style="margin: 0; color: var(--gold); font-size: 1.1rem;">VIRA FRANGOS — BILHETE DO DIA</h3>
             <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 15px;">Challenge Rumo aos 10.000 NOK</p>
-            
+
             <div style="background: rgba(0,0,0,0.4); padding: 15px; border-radius: 10px; margin-bottom: 15px; text-align: left;">
                 <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 5px;">Aposta Combinada:</div>
-                <div id="storyMatches" style="font-size: 0.9rem; font-weight: 700; color: white; margin-bottom: 10px;">• Nenhuma seleção</div>
+                <div id="storyMatches" style="font-size: 0.85rem; font-weight: 700; color: white; margin-bottom: 10px;">• Nenhuma seleção</div>
                 <div style="display: flex; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px;">
                     <span>Odd Total: <b id="storyOdd" style="color: var(--gold);">1.00</b></span>
                     <span>Retorno: <b id="storyReturn" style="color: var(--green);">0 NOK</b></span>
@@ -477,24 +455,66 @@
     </div>
 
     <script>
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            event.currentTarget.classList.add('active');
-        }
-
-        let selectedTips = [];
-        const baseDatabase = [
-            { name: 'Sporting CP vs Vitória SC', odd: 1.35 },
-            { name: 'Telstar vs Sparta Rotterdam', odd: 1.62 },
-            { name: 'Galatasaray vs Çorum FK', odd: 1.45 }
+        // BASE DE DADOS COMPLETA DE JOGOS
+        const jogosDatabase = [
+            { id: 1, liga: "Portugal", equipas: "Sporting CP vs Vitória SC", hRating: 9, aRating: 6, opcoes: [ { label: "Vitória Sporting (1)", odd: 1.35 }, { label: "Ambas Marcam (Sim)", odd: 1.85 }, { label: "Over 2.5 Golos", odd: 1.65 } ] },
+            { id: 2, liga: "Portugal", equipas: "FC Porto vs SC Braga", hRating: 8, aRating: 7, opcoes: [ { label: "Vitória FC Porto (1)", odd: 1.80 }, { label: "Ambas Marcam (Sim)", odd: 1.70 }, { label: "Over 2.5 Golos", odd: 1.82 } ] },
+            { id: 3, liga: "Inglaterra", equipas: "Manchester City vs Newcastle", hRating: 9, aRating: 7, opcoes: [ { label: "Vitória Man City (1)", odd: 1.45 }, { label: "Over 2.5 Golos", odd: 1.55 }, { label: "Ambas Marcam (Sim)", odd: 1.65 } ] },
+            { id: 4, liga: "Inglaterra", equipas: "Arsenal vs Chelsea", hRating: 8, aRating: 7, opcoes: [ { label: "Vitória Arsenal (1)", odd: 1.75 }, { label: "Ambas Marcam (Sim)", odd: 1.62 }, { label: "Arsenal a Marcar 1º", odd: 1.50 } ] },
+            { id: 5, liga: "Espanha", equipas: "Real Madrid vs Real Sociedad", hRating: 9, aRating: 6, opcoes: [ { label: "Vitória Real Madrid (1)", odd: 1.40 }, { label: "Over 2.5 Golos", odd: 1.60 }, { label: "Real Madrid -1.5 HC", odd: 2.10 } ] },
+            { id: 6, liga: "Espanha", equipas: "Barcelona vs Villarreal", hRating: 8, aRating: 6, opcoes: [ { label: "Vitória Barcelona (1)", odd: 1.50 }, { label: "Ambas Marcam (Sim)", odd: 1.55 }, { label: "Over 3.5 Golos", odd: 2.20 } ] },
+            { id: 7, liga: "Outras", equipas: "Telstar vs Sparta Rotterdam", hRating: 5, aRating: 6, opcoes: [ { label: "Ambas Marcam (Sim)", odd: 1.62 }, { label: "Vitória Sparta (2)", odd: 2.15 }, { label: "Over 2.5 Golos", odd: 1.70 } ] },
+            { id: 8, liga: "Outras", equipas: "Galatasaray vs Çorum FK", hRating: 9, aRating: 3, opcoes: [ { label: "Galatasaray -1.5 HC", odd: 1.45 }, { label: "Over 3.5 Golos", odd: 1.95 }, { label: "Vitória Galatasaray (1)", odd: 1.18 } ] }
         ];
 
-        function toggleSelection(name, odd) {
-            const index = selectedTips.findIndex(item => item.name === name);
-            if (index > -1) { selectedTips.splice(index, 1); } 
-            else { selectedTips.push({ name, odd }); }
+        let selectedTips = [];
+
+        function renderJogos(liga = 'todas') {
+            const container = document.getElementById('listaJogosContainer');
+            container.innerHTML = '';
+
+            const filtrados = liga === 'todas' ? jogosDatabase : jogosDatabase.filter(j => j.liga === liga);
+
+            filtrados.forEach(j => {
+                let html = `
+                    <div class="match-card">
+                        <div class="match-header">
+                            <span class="league-title">${j.liga}</span>
+                            <span class="match-teams">${j.equipas}</span>
+                        </div>
+                        <div class="markets-grid">
+                `;
+
+                j.opcoes.forEach(op => {
+                    const idAposta = `${j.equipas} - ${op.label}`;
+                    const isSelected = selectedTips.some(s => s.id === idAposta);
+                    html += `
+                        <div class="market-item">
+                            <span class="market-label">${op.label}</span>
+                            <button class="btn-odd ${isSelected ? 'active' : ''}" onclick="toggleAposta('${idAposta}', '${j.equipas}', '${op.label}', ${op.odd})">${op.odd.toFixed(2)}</button>
+                        </div>
+                    `;
+                });
+
+                html += `</div></div>`;
+                container.innerHTML += html;
+            });
+        }
+
+        function filtrarLiga(liga) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            renderJogos(liga);
+        }
+
+        function toggleAposta(id, jogo, selecao, odd) {
+            const index = selectedTips.findIndex(item => item.id === id);
+            if (index > -1) {
+                selectedTips.splice(index, 1);
+            } else {
+                selectedTips.push({ id, jogo, selecao, name: `${jogo} (${selecao})`, odd });
+            }
+            renderJogos(document.querySelector('.filter-btn.active').innerText.includes('Portugal') ? 'Portugal' : 'todas');
             updateSlip();
         }
 
@@ -512,26 +532,58 @@
             document.getElementById('slipReturn').innerText = totalReturn.toFixed(2) + ' NOK';
         }
 
-        function clearSlip() { selectedTips = []; updateSlip(); }
-
-        // ALGORITMO GERADOR DE MÚLTIPLAS
-        function gerarMultiplaIA() {
-            const numGames = parseInt(document.getElementById('genGames').value);
-            selectedTips = []; // Limpa o boletim atual
-
-            // Seleciona jogos base da nossa lista de valor
-            let picks = baseDatabase.slice(0, numGames);
-            picks.forEach(p => selectedTips.push(p));
-
+        function clearSlip() {
+            selectedTips = [];
+            renderJogos('todas');
             updateSlip();
-
-            // Mostra resultado ao utilizador
-            let totalOdd = selectedTips.reduce((acc, item) => acc * item.odd, 1).toFixed(2);
-            document.getElementById('genResult').style.display = 'block';
-            document.getElementById('genDetails').innerHTML = selectedTips.map(t => `✔ <b>${t.name}</b> (Odd ${t.odd})`).join('<br>') + `<br><br><b>Odd Final da Combinada: <span style="color: var(--gold);">${totalOdd}</span></b>`;
         }
 
-        // IA PREDICTOR
+        // GERADOR MÚLTIPLAS COM TODOS OS JOGOS
+        function gerarMultiplaIA() {
+            const numGames = parseInt(document.getElementById('genGames').value);
+            const profile = document.getElementById('genTarget').value;
+            selectedTips = [];
+
+            // Algoritmo de seleção de apostas de valor
+            let pool = [];
+            jogosDatabase.forEach(j => {
+                if (profile === 'safe') pool.push({ id: `${j.equipas} - ${j.opcoes[0].label}`, jogo: j.equipas, selecao: j.opcoes[0].label, name: `${j.equipas} (${j.opcoes[0].label})`, odd: j.opcoes[0].odd });
+                else if (profile === 'med') pool.push({ id: `${j.equipas} - ${j.opcoes[0].label}`, jogo: j.equipas, selecao: j.opcoes[0].label, name: `${j.equipas} (${j.opcoes[0].label})`, odd: j.opcoes[0].odd });
+                else pool.push({ id: `${j.equipas} - HC`, jogo: j.equipas, selecao: j.opcoes[j.opcoes.length-1].label, name: `${j.equipas} (${j.opcoes[j.opcoes.length-1].label})`, odd: j.opcoes[j.opcoes.length-1].odd });
+            });
+
+            // Seleciona jogos aleatórios da pool filtrada
+            let escolhas = pool.sort(() => 0.5 - Math.random()).slice(0, numGames);
+            escolhas.forEach(p => selectedTips.push(p));
+
+            renderJogos('todas');
+            updateSlip();
+
+            let totalOdd = selectedTips.reduce((acc, item) => acc * item.odd, 1).toFixed(2);
+            document.getElementById('genResult').style.display = 'block';
+            document.getElementById('genDetails').innerHTML = selectedTips.map(t => `✔ <b>${t.name}</b> — Odd ${t.odd.toFixed(2)}`).join('<br>') + `<br><br><b>Odd Final Combinada: <span style="color: var(--gold);">${totalOdd}</span></b>`;
+        }
+
+        // CARREGAR JOGOS NA IA PREDICTOR
+        function popularSelectIA() {
+            const select = document.getElementById('aiSelectMatch');
+            select.innerHTML = '';
+            jogosDatabase.forEach(j => {
+                select.innerHTML += `<option value="${j.id}">${j.equipas} (${j.liga})</option>`;
+            });
+            carregarJogoNaIA();
+        }
+
+        function carregarJogoNaIA() {
+            const idSelected = parseInt(document.getElementById('aiSelectMatch').value);
+            const jogo = jogosDatabase.find(j => j.id === idSelected);
+            if (jogo) {
+                document.getElementById('aiHome').value = jogo.hRating;
+                document.getElementById('aiAway').value = jogo.aRating;
+                document.getElementById('aiOdd').value = jogo.opcoes[0].odd;
+            }
+        }
+
         function calcularIA() {
             const home = parseFloat(document.getElementById('aiHome').value) || 5;
             const away = parseFloat(document.getElementById('aiAway').value) || 5;
@@ -556,6 +608,14 @@
             }
         }
 
+        // TAB NAVIGATION
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
         // MODAL STORY
         function abrirStoryModal() {
             if (selectedTips.length === 0) { alert('Adiciona pelo menos 1 jogo ao boletim antes de criar o Story!'); return; }
@@ -572,6 +632,10 @@
             const content = btn.nextElementSibling;
             content.style.display = content.style.display === 'block' ? 'none' : 'block';
         }
+
+        // INICIALIZAÇÃO
+        renderJogos('todas');
+        popularSelectIA();
 
         // GRÁFICO
         const ctx = document.getElementById('chartEvolucao').getContext('2d');
