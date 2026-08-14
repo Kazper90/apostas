@@ -14,12 +14,12 @@ export default async function handler(req, res) {
 
   const API_KEY = process.env.FOOTBALL_DATA_KEY || 'e89eb735584b4ec4a5aca34fa4e91e53';
 
-  // Jogos base de fallback (garante que NUNCA fica vazio no site)
-  const defaultMatches = [
-    { id: 1, liga: 'Liga Portugal', ligaCategory: 'Liga Portugal', home: 'Benfica', away: 'Porto', data: '15/08/2026', hora: '20:30', odds: { home: '2.10', draw: '3.20', away: '3.40' } },
-    { id: 2, liga: 'Liga Portugal', ligaCategory: 'Liga Portugal', home: 'Sporting', away: 'Braga', data: '16/08/2026', hora: '18:00', odds: { home: '1.75', draw: '3.60', away: '4.50' } },
-    { id: 3, liga: 'Premier League', ligaCategory: 'Premier League', home: 'Arsenal', away: 'Chelsea', data: '15/08/2026', hora: '17:30', odds: { home: '1.95', draw: '3.50', away: '3.80' } },
-    { id: 4, liga: 'La Liga', ligaCategory: 'La Liga', home: 'Real Madrid', away: 'Barcelona', data: '16/08/2026', hora: '21:00', odds: { home: '2.20', draw: '3.40', away: '3.10' } }
+  // Lista base de jogos com todos os campos possíveis
+  const defaultList = [
+    { id: 1, liga: 'Liga Portugal', ligaCategory: 'Liga Portugal', league: 'Liga Portugal', home: 'Benfica', away: 'Porto', homeTeam: 'Benfica', awayTeam: 'Porto', data: '15/08/2026', hora: '20:30', odds: { home: '2.10', draw: '3.20', away: '3.40', 1: '2.10', X: '3.20', 2: '3.40' } },
+    { id: 2, liga: 'Liga Portugal', ligaCategory: 'Liga Portugal', league: 'Liga Portugal', home: 'Sporting', away: 'Braga', homeTeam: 'Sporting', awayTeam: 'Braga', data: '16/08/2026', hora: '18:00', odds: { home: '1.75', draw: '3.60', away: '4.50', 1: '1.75', X: '3.60', 2: '4.50' } },
+    { id: 3, liga: 'Premier League', ligaCategory: 'Premier League', league: 'Premier League', home: 'Arsenal', away: 'Chelsea', homeTeam: 'Arsenal', awayTeam: 'Chelsea', data: '15/08/2026', hora: '17:30', odds: { home: '1.95', draw: '3.50', away: '3.80', 1: '1.95', X: '3.50', 2: '3.80' } },
+    { id: 4, liga: 'La Liga', ligaCategory: 'La Liga', league: 'La Liga', home: 'Real Madrid', away: 'Barcelona', homeTeam: 'Real Madrid', awayTeam: 'Barcelona', data: '16/08/2026', hora: '21:00', odds: { home: '2.20', draw: '3.40', away: '3.10', 1: '2.20', X: '3.40', 2: '3.10' } }
   ];
 
   try {
@@ -45,25 +45,42 @@ export default async function handler(req, res) {
           id: m.id || index + 1,
           liga: m.competition?.name || 'Futebol Internacional',
           ligaCategory: ligaCat,
+          league: m.competition?.name || 'Futebol Internacional',
           home: m.homeTeam?.name || 'Equipa Casa',
           away: m.awayTeam?.name || 'Equipa Fora',
+          homeTeam: m.homeTeam?.name || 'Equipa Casa',
+          awayTeam: m.awayTeam?.name || 'Equipa Fora',
           data: m.utcDate ? new Date(m.utcDate).toLocaleDateString('pt-PT') : 'Hoje',
           hora: m.utcDate ? new Date(m.utcDate).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' }) : '20:00',
           odds: {
             home: (1.50 + (index % 5) * 0.22).toFixed(2),
             draw: (3.10 + (index % 3) * 0.25).toFixed(2),
-            away: (2.10 + (index % 4) * 0.35).toFixed(2)
+            away: (2.10 + (index % 4) * 0.35).toFixed(2),
+            1: (1.50 + (index % 5) * 0.22).toFixed(2),
+            X: (3.10 + (index % 3) * 0.25).toFixed(2),
+            2: (2.10 + (index % 4) * 0.35).toFixed(2)
           }
         };
       });
     }
 
-    // Se a API não devolver jogos agendados no momento, usa o fallback para o site não ficar vazio
-    const finalData = matches.length > 0 ? matches : defaultMatches;
+    const finalArray = matches.length > 0 ? matches : defaultList;
 
-    // Retorna nos dois formatos possíveis para garantir compatibilidade total
-    return res.status(200).json(Object.assign(finalData, { matches: finalData }));
+    // Resposta em OBJETO cobrindo todas as chaves onde o front-end pode procurar o array
+    return res.status(200).json({
+      matches: finalArray,
+      jogos: finalArray,
+      data: finalArray,
+      games: finalArray,
+      items: finalArray
+    });
   } catch (error) {
-    return res.status(200).json(Object.assign(defaultMatches, { matches: defaultMatches }));
+    return res.status(200).json({
+      matches: defaultList,
+      jogos: defaultList,
+      data: defaultList,
+      games: defaultList,
+      items: defaultList
+    });
   }
 }
