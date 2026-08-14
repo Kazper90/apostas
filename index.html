@@ -495,65 +495,48 @@
         let selectedTips = [];
         let ligaAtual = 'todas';
 
-      async function carregarJogosDaAPI() {
-    try {
-        const res = await fetch('/api/matches');
-        if (!res.ok) throw new Error('API não disponível');
-        const data = await res.json();
-        
-        if (Array.isArray(data)) {
-            jogosDatabase = data;
-        } else if (data && Array.isArray(data.matches)) {
-            jogosDatabase = data.matches;
-        } else if (data && Array.isArray(data.jogos)) {
-            jogosDatabase = data.jogos;
-        } else {
-            throw new Error('Formato inválido');
+async function carregarJogosDaAPI() {
+    jogosDatabase = [
+        {
+            id: 1,
+            liga: "Liga Portugal",
+            equipas: "Sporting vs Vitória SC",
+            hRating: 8,
+            aRating: 5,
+            opcoes: [
+                { label: "Vitória Sporting", odd: 1.45 },
+                { label: "Empate", odd: 4.20 },
+                { label: "Vitória Vitória", odd: 7.00 }
+            ]
+        },
+        {
+            id: 2,
+            liga: "Premier League",
+            equipas: "Arsenal vs Chelsea",
+            hRating: 9,
+            aRating: 7,
+            opcoes: [
+                { label: "Vitória Arsenal", odd: 1.75 },
+                { label: "Empate", odd: 3.60 },
+                { label: "Vitória Chelsea", odd: 4.50 }
+            ]
+        },
+        {
+            id: 3,
+            liga: "La Liga",
+            equipas: "Real Madrid vs Barcelona",
+            hRating: 9,
+            aRating: 9,
+            opcoes: [
+                { label: "Vitória Real", odd: 2.10 },
+                { label: "Empate", odd: 3.50 },
+                { label: "Vitória Barcelona", odd: 3.20 }
+            ]
         }
-    } catch (e) {
-        console.warn("A usar dados locais de segurança (Fallback):", e);
-        jogosDatabase = [
-            {
-                id: 1,
-                liga: "Liga Portugal",
-                equipas: "Sporting vs Vitória SC",
-                hRating: 8,
-                aRating: 5,
-                opcoes: [
-                    { label: "Vitória Sporting", odd: 1.45 },
-                    { label: "Empate", odd: 4.20 },
-                    { label: "Vitória Vitória", odd: 7.00 }
-                ]
-            },
-            {
-                id: 2,
-                liga: "Premier League",
-                equipas: "Arsenal vs Chelsea",
-                hRating: 9,
-                aRating: 7,
-                opcoes: [
-                    { label: "Vitória Arsenal", odd: 1.75 },
-                    { label: "Empate", odd: 3.60 },
-                    { label: "Vitória Chelsea", odd: 4.50 }
-                ]
-            },
-            {
-                id: 3,
-                liga: "La Liga",
-                equipas: "Real Madrid vs Barcelona",
-                hRating: 9,
-                aRating: 9,
-                opcoes: [
-                    { label: "Vitória Real", odd: 2.10 },
-                    { label: "Empate", odd: 3.50 },
-                    { label: "Vitória Barcelona", odd: 3.20 }
-                ]
-            }
-        ];
-    } finally {
-        renderJogos(ligaAtual);
-        if (typeof popularSelectIA === 'function') popularSelectIA();
-    }
+    ];
+
+    renderJogos(ligaAtual);
+    if (typeof popularSelectIA === 'function') popularSelectIA();
 }
 
         function renderJogos(liga = 'todas') {
