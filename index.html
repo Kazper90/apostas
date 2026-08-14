@@ -3,508 +3,587 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vira Frangos — Challenge & AI Múltiplas</title>
+    <title>Vira Frangos — Challenge Rumo aos 10K & Prognósticos</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0b0f19;
-            --card-bg: #151c2c;
-            --primary-red: #dc2626;
-            --primary-red-hover: #b91c1c;
-            --gold: #f59e0b;
+            --bg-base: #060913;
+            --bg-surface: #0f172a;
+            --bg-card: rgba(17, 24, 39, 0.85);
+            --primary-red: #ef4444;
+            --red-glow: rgba(239, 68, 68, 0.35);
+            --gold: #fbbf24;
+            --gold-light: #fde047;
+            --gold-glow: rgba(251, 191, 36, 0.2);
             --green: #10b981;
-            --text-light: #f8fafc;
+            --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --border: #1e293b;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-light);
-            margin: 0;
-            padding: 0;
-            padding-bottom: 50px;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding-bottom: 140px;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(251, 191, 36, 0.03) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(239, 68, 68, 0.03) 0%, transparent 40%);
+            background-attachment: fixed;
         }
 
+        /* NAVIGATION BAR */
         .navbar {
-            background: #090d16;
-            padding: 15px 20px;
+            background: rgba(6, 9, 19, 0.95);
+            backdrop-filter: blur(16px);
+            padding: 14px 20px;
             display: flex;
             justify-content: center;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid var(--border-color);
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
         }
 
-        .nav-tabs {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
+        .nav-tabs { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
 
         .tab-btn {
-            background: transparent;
-            border: 1px solid var(--border);
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
             color: var(--text-muted);
-            padding: 10px 18px;
-            border-radius: 8px;
+            padding: 8px 16px;
+            border-radius: 10px;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .tab-btn:hover, .tab-btn.active {
-            background: var(--primary-red);
-            color: white;
-            border-color: var(--primary-red);
-        }
-
-        .container {
-            max-width: 1100px;
-            margin: 20px auto;
-            padding: 0 20px;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-bottom: 25px;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 20px;
-        }
-
-        .card-title {
-            color: var(--text-muted);
+            transition: var(--transition);
             font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .card-value {
-            font-size: 1.8rem;
-            font-weight: 800;
+        .tab-btn:hover { color: var(--text-main); border-color: rgba(255, 255, 255, 0.2); }
+        .tab-btn.active { background: linear-gradient(135deg, var(--primary-red), #b91c1c); color: white; border-color: transparent; box-shadow: 0 6px 18px var(--red-glow); }
+
+        /* HEADER & LOGO */
+        .header-banner {
+            text-align: center;
+            padding: 35px 20px 25px 20px;
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.8) 0%, transparent 100%);
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .card-value.gold { color: var(--gold); }
-        .card-value.red { color: var(--primary-red); }
-        .card-value.blue { color: #38bdf8; }
-
-        .progress-bar {
-            width: 100%;
-            height: 6px;
-            background: var(--border);
-            border-radius: 3px;
-            margin-top: 12px;
-            overflow: hidden;
+        .header-logo-wrapper {
+            display: inline-block;
+            padding: 5px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), transparent);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            margin-bottom: 12px;
         }
 
-        .progress-fill {
-            height: 100%;
-            background: var(--gold);
-            width: 0.5%;
-        }
+        .header-logo { max-height: 180px; width: auto; object-fit: contain; display: block; border-radius: 16px; }
 
-        .table-responsive {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-            text-align: left;
-        }
-
-        th, td {
-            padding: 12px 15px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        th {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            text-transform: uppercase;
-        }
-
-        .badge {
-            padding: 4px 10px;
+        .badge-base {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            color: var(--gold);
+            padding: 6px 16px;
             border-radius: 20px;
             font-size: 0.75rem;
             font-weight: 700;
-            display: inline-block;
-        }
-
-        .badge-live { background: rgba(245, 158, 11, 0.2); color: var(--gold); border: 1px solid var(--gold); }
-        .badge-win { background: rgba(16, 185, 129, 0.2); color: var(--green); border: 1px solid var(--green); }
-        .badge-loss { background: rgba(220, 38, 38, 0.2); color: var(--primary-red); border: 1px solid var(--primary-red); }
-
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-
-        /* ESTILOS DA IA DE MÚLTIPLAS */
-        .ai-container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        .ai-header {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-        .ai-btn {
-            background: linear-gradient(135deg, var(--gold), #d97706);
-            color: #000;
-            border: none;
-            padding: 14px 28px;
-            font-size: 1.1rem;
-            font-weight: 800;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3);
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .ai-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(245, 158, 11, 0.5);
-        }
-        .multi-card {
-            background: #0d1321;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
             margin-bottom: 12px;
+        }
+
+        .main-title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #ffffff;
+            margin: 0;
+        }
+
+        .main-title span { color: var(--gold); }
+
+        .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease forwards; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* METRICS GRID */
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .metric-title { color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; margin-bottom: 8px; }
+        .metric-value { font-size: 1.7rem; font-weight: 900; }
+        .gold { color: var(--gold); }
+        .blue { color: #38bdf8; }
+
+        /* SECTION & FILTERS */
+        .section-title { color: var(--text-main); margin-bottom: 16px; font-size: 1.25rem; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+        .section-title i { color: var(--gold); }
+
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 24px;
+            overflow-x: auto;
+            padding-bottom: 6px;
+        }
+
+        .filter-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 8px 18px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: var(--transition);
+        }
+
+        .filter-btn:hover { border-color: var(--gold); color: white; }
+        .filter-btn.active { background: var(--gold); color: #060913; font-weight: 800; border-color: var(--gold); box-shadow: 0 4px 15px var(--gold-glow); }
+
+        /* MATCH CARDS */
+        .match-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: var(--transition);
+        }
+
+        .match-card:hover { border-color: rgba(251, 191, 36, 0.3); }
+
+        .match-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .league-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+        .match-teams { font-size: 1.15rem; font-weight: 800; color: white; }
+
+        .markets-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+
+        .market-item {
+            background: rgba(6, 9, 19, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; color: var(--text-muted); font-weight: 600; font-size: 0.9rem; }
-        .form-control { width: 100%; padding: 12px; background: #0d1321; border: 1px solid var(--border); border-radius: 8px; color: white; font-size: 1rem; box-sizing: border-box; }
-        .form-control:focus { border-color: var(--gold); outline: none; }
+        .market-label { font-size: 0.82rem; color: var(--text-muted); font-weight: 600; }
+
+        .btn-odd {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            font-weight: 800;
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            min-width: 72px;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .btn-odd:hover { background: rgba(251, 191, 36, 0.2); }
+        .btn-odd.active { background: var(--gold); color: #060913; box-shadow: 0 0 15px var(--gold-glow); }
+
+        /* BETSLIP BAR */
+        .betslip-bar {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: rgba(6, 9, 19, 0.96);
+            backdrop-filter: blur(20px);
+            border-top: 2px solid var(--gold);
+            padding: 16px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            flex-wrap: wrap;
+            gap: 15px;
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.8);
+        }
+
+        .betslip-info { display: flex; gap: 25px; align-items: center; flex-wrap: wrap; }
+        .betslip-field-label { color: var(--text-muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; display: block; margin-bottom: 2px; }
+        .stake-input { width: 75px; background: var(--bg-surface); border: 1px solid var(--border-color); color: white; padding: 6px 10px; border-radius: 6px; font-weight: 700; }
+        .stake-input:focus { outline: none; border-color: var(--gold); }
         
-        .result-box { background: #0d1321; border-radius: 12px; padding: 20px; margin-top: 25px; border: 1px dashed var(--border); text-align: center; }
-        .status-pill { font-weight: 800; font-size: 1.1rem; padding: 8px 16px; border-radius: 8px; display: inline-block; margin-top: 10px; }
+        .btn-action { background: #3b82f6; border: none; color: white; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+        .btn-action:hover { background: #2563eb; }
+        .btn-clear { background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); padding: 8px 16px; cursor: pointer; border-radius: 8px; font-weight: 600; }
+        .btn-clear:hover { border-color: var(--primary-red); color: var(--primary-red); }
+
+        /* AI BOX & FAQ */
+        .card-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 30px; }
     </style>
 </head>
 <body>
 
-    <div class="navbar">
+    <!-- NAVBAR COM AS 5 OPÇÕES DA IMAGEM -->
+    <nav class="navbar">
         <div class="nav-tabs">
-            <button class="tab-btn active" onclick="switchTab('dashboard', event)"><i class="fa-solid fa-chart-line"></i> Dashboard</button>
-            <button class="tab-btn" onclick="switchTab('aimultiplas', event)"><i class="fa-solid fa-robot"></i> AI Múltiplas</button>
-            <button class="tab-btn" onclick="switchTab('analise', event)"><i class="fa-solid fa-calculator"></i> Analisador</button>
-            <button class="tab-btn" onclick="switchTab('simulador', event)"><i class="fa-solid fa-fire"></i> Simulador 10K</button>
+            <button class="tab-btn active" onclick="switchTab('prognosticos', this)"><i class="fa-solid fa-list-check"></i> Todos os Jogos</button>
+            <button class="tab-btn" onclick="switchTab('gerador-multi', this)"><i class="fa-solid fa-wand-magic-sparkles" style="color: var(--gold);"></i> Gerador Múltiplas</button>
+            <button class="tab-btn" onclick="switchTab('ia-predictor', this)"><i class="fa-solid fa-robot"></i> IA Predictor</button>
+            <button class="tab-btn" onclick="switchTab('dashboard', this)"><i class="fa-solid fa-chart-line"></i> Challenge 10K</button>
+            <button class="tab-btn" onclick="switchTab('faq', this)"><i class="fa-solid fa-circle-question"></i> FAQ</button>
         </div>
-    </div>
+    </nav>
 
-    <div style="text-align: center; padding: 30px 0 15px 0;">
-        <img src="ViraFrangosLogo.jpg" alt="Logo Vira Frangos" style="width: 230px; height: auto; object-fit: contain; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); margin-bottom: 18px;" onerror="this.src='https://raw.githubusercontent.com/Kazper90/apostas/main/ViraFrangosLogo.jpg'">
+    <!-- CABEÇALHO COM LOGÓTIPO -->
+    <header class="header-banner">
+        <div class="header-logo-wrapper">
+            <img src="https://raw.githubusercontent.com/Kazper90/apostas/main/ViraFrangosLogo.jpg" alt="Vira Frangos Logo" class="header-logo" onerror="this.onerror=null; this.src='ViraFrangosLogo.jpg';">
+        </div>
         <div>
-            <span style="display: inline-block; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #f59e0b; padding: 4px 16px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px;">
-                <i class="fa-solid fa-fire" style="margin-right: 6px; color: #dc2626;"></i> Desafio Ativo
-            </span>
+            <span class="badge-base"><i class="fa-solid fa-fire"></i> Base de Dados Completa de Jogos</span>
         </div>
-        <h1 style="color: #ffffff; font-family: 'Segoe UI', system-ui, sans-serif; font-size: 2rem; font-weight: 800; margin: 0; letter-spacing: 1.5px; text-transform: uppercase;">
-            O CHALLENGE DOS <span style="color: #f59e0b;">10K</span>
-        </h1>
-        <p style="color: #94a3b8; font-family: 'Segoe UI', system-ui, sans-serif; font-size: 0.95rem; margin-top: 8px; font-weight: 500; letter-spacing: 0.5px;">
-            Diário Oficial de Apostas &amp; Evolução de Capital
-        </p>
-    </div>
+        <h1 class="main-title">O Challenge dos <span>10K</span></h1>
+    </header>
 
-    <div class="container">
+    <main class="container">
 
-        <!-- TAB 1: DASHBOARD -->
-        <div id="dashboard" class="tab-content active">
-            <div class="grid">
-                <div class="card">
-                    <div class="card-title">Banca Atual (Challenge)</div>
-                    <div class="card-value gold">50,55 NOK</div>
-                    <div class="progress-bar"><div class="progress-fill"></div></div>
-                    <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 8px;">Progresso: 0.5% rumo aos 10.000 NOK</p>
+        <!-- TAB 1: TODOS OS JOGOS -->
+        <section id="prognosticos" class="tab-content active">
+            <h2 class="section-title"><i class="fa-solid fa-futbol"></i> Jogos em Destaque & Odds Disponíveis</h2>
+            
+            <div class="filter-bar" id="ligaFilterBar">
+                <button class="filter-btn active" onclick="filtrarLiga('todas', this)">Todas as Ligas</button>
+                <button class="filter-btn" onclick="filtrarLiga('PT Liga Portugal', this)">PT Liga Portugal</button>
+                <button class="filter-btn" onclick="filtrarLiga('Premier League', this)">Premier League</button>
+                <button class="filter-btn" onclick="filtrarLiga('ES La Liga', this)">ES La Liga</button>
+                <button class="filter-btn" onclick="filtrarLiga('Outras Ligas', this)">Outras Ligas</button>
+            </div>
+
+            <div id="listaJogosContainer"></div>
+        </section>
+
+        <!-- TAB 2: GERADOR MÚLTIPLAS -->
+        <section id="gerador-multi" class="tab-content">
+            <div class="card-box" style="text-align: center; max-width: 700px; margin: 0 auto;">
+                <h2 style="color: var(--gold); margin-bottom: 12px;"><i class="fa-solid fa-wand-magic-sparkles"></i> Gerador Inteligente de Múltiplas</h2>
+                <p style="color: var(--text-muted); margin-bottom: 25px;">O sistema cruza estatísticas em tempo real para otimizar o teu boletim de apostas com base nas partidas disponíveis.</p>
+                <button onclick="gerarMultiplaIA()" style="background: linear-gradient(135deg, var(--gold), #d97706); border: none; color: #060913; padding: 14px 28px; border-radius: 12px; font-weight: 800; cursor: pointer; font-size: 1rem;"><i class="fa-solid fa-bolt"></i> Gerar Múltipla Automática</button>
+                <div id="genResult" style="display: none; margin-top: 25px; background: rgba(6,9,19,0.8); border: 1px solid var(--gold); border-radius: 12px; padding: 20px; text-align: left;"></div>
+            </div>
+        </section>
+
+        <!-- TAB 3: IA PREDICTOR -->
+        <section id="ia-predictor" class="tab-content">
+            <div class="card-box" style="max-width: 700px; margin: 0 auto;">
+                <h2 style="color: var(--gold); margin-bottom: 12px;"><i class="fa-solid fa-robot"></i> IA Predictor Pro</h2>
+                <p style="color: var(--text-muted); margin-bottom: 20px;">Análise preditiva baseada em xG, histórico de confrontos diretos e forma atual das equipas.</p>
+                <div style="background: rgba(15, 23, 42, 0.6); padding: 16px; border-radius: 10px; border: 1px solid var(--border-color);">
+                    <strong>Próximo Jogo Analisado pela IA:</strong> Sporting CP vs Vitória SC<br>
+                    <span style="color: var(--green); display: block; margin-top: 8px;">Previsão: Vitória Sporting / Ambas Marcam (Sim) — Probabilidade de êxito: 78%</span>
                 </div>
-                <div class="card">
-                    <div class="card-title">Ronda #1 em Jogo</div>
-                    <div class="card-value red">105,65 NOK</div>
-                    <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 8px;">Retorno Potencial (Odd Total: 2.09)</p>
+            </div>
+        </section>
+
+        <!-- TAB 4: CHALLENGE 10K (DASHBOARD) -->
+        <section id="dashboard" class="tab-content">
+            <div class="grid-4" style="margin-bottom: 25px;">
+                <div class="metric-card">
+                    <div class="metric-title">ROI Acumulado</div>
+                    <div class="metric-value gold">0,0%</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 6px;">Início do Challenge</div>
                 </div>
-                <div class="card">
-                    <div class="card-title">Reserva de Emergência</div>
-                    <div class="card-value blue">200,00 NOK</div>
-                    <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 8px;">Capital Protegido Intocável</p>
+                <div class="metric-card">
+                    <div class="metric-title">Win Rate (%)</div>
+                    <div class="metric-value gold">0%</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 6px;">Ronda #1 em curso</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">Odd Total R1</div>
+                    <div class="metric-value blue">2.09</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 6px;">Em jogo</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-title">Lucro Total</div>
+                    <div class="metric-value gold">0,00 NOK</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 6px;">A aguardar R1</div>
                 </div>
             </div>
 
-            <!-- GRÁFICO DINÂMICO -->
-            <div class="card" style="margin-bottom: 25px;">
-                <div class="card-title">Curva de Evolução do Challenge</div>
-                <div style="height: 320px; position: relative;">
-                    <canvas id="chartEvolucao"></canvas>
+            <div class="metric-card">
+                <div class="metric-title" style="margin-bottom: 15px;">Evolução Gráfica do Challenge</div>
+                <div style="height: 260px;"><canvas id="chartEvolucao"></canvas></div>
+            </div>
+        </section>
+
+        <!-- TAB 5: FAQ -->
+        <section id="faq" class="tab-content">
+            <div class="card-box" style="max-width: 800px; margin: 0 auto;">
+                <h2 style="color: var(--gold); margin-bottom: 20px;"><i class="fa-solid fa-circle-question"></i> Perguntas Frequentes (FAQ)</h2>
+                <div style="margin-bottom: 15px;">
+                    <strong style="color: white; display: block; margin-bottom: 5px;">O que é o Challenge 10K?</strong>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">É um desafio de gestão de banca rigoroso que visa multiplicar o capital inicial rumo aos 10.000 NOK através de rondas calculadas.</p>
+                </div>
+                <div>
+                    <strong style="color: white; display: block; margin-bottom: 5px;">Como funcionam as Odds e os Prognósticos?</strong>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">As odds são atualizadas em tempo real com base nos calendários oficiais das principais ligas europeias e sul-americanas.</p>
                 </div>
             </div>
+        </section>
 
-            <div class="card">
-                <div class="card-title">Últimas Rondas Registadas</div>
-                <div class="table-responsive">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Ronda</th>
-                                <th>Data</th>
-                                <th>Entrada / Jogos</th>
-                                <th>Odd</th>
-                                <th>Stake</th>
-                                <th>Retorno</th>
-                                <th>Estado</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><b>#1</b></td>
-                                <td>14/08/2026</td>
-                                <td>
-                                    • Telstar vs Sparta Rotterdam (BTTS Sim)<br>
-                                    • Galatasaray vs Çorum FK (1X2)<br>
-                                    • Sporting CP vs Vitória SC (1X2)
-                                </td>
-                                <td><b>2.09</b></td>
-                                <td>50,55 NOK</td>
-                                <td>105,65 NOK</td>
-                                <td><span class="badge badge-live">EM JOGO</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+    </main>
+
+    <!-- BOLETIM DE APOSTAS FIXO -->
+    <div class="betslip-bar">
+        <div class="betslip-info">
+            <div>
+                <span class="betslip-field-label">Seleções</span>
+                <span id="slipCount" style="font-weight: 800; color: white; font-size: 1rem;">0 Jogo(s)</span>
             </div>
-        </div>
-
-        <!-- TAB 2: AI MÚLTIPLAS -->
-        <div id="aimultiplas" class="tab-content">
-            <div class="ai-container">
-                <div class="card ai-header">
-                    <h2 style="color: var(--gold); margin-top: 0;"><i class="fa-solid fa-robot"></i> Gerador de Múltiplas por Inteligência Artificial</h2>
-                    <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px;">
-                        A IA analisa dados estatísticos em tempo real para combinar as melhores seleções com odds de valor para o teu Challenge.
-                    </p>
-                    <button class="ai-btn" onclick="gerarMultiplaIA()"><i class="fa-solid fa-wand-magic-sparkles"></i> Gerar Bilhete Múltiplo IA</button>
-                </div>
-
-                <div id="aiResultArea" style="display: none;">
-                    <div class="card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                            <span class="badge badge-live" id="aiConfiancaBadge">CONFIANÇA: ALTA (88%)</span>
-                            <span style="color: var(--gold); font-weight: bold; font-size: 1.1rem;">Odd Total Alvo: <span id="aiTotalOdd">2.15</span></span>
-                        </div>
-                        <div id="aiSelectionsList">
-                            <!-- Injetado por JS -->
-                        </div>
-                        <div style="text-align: right; margin-top: 15px;">
-                            <button onclick="copiarMultipla()" style="background: #10b981; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer;"><i class="fa-solid fa-copy"></i> Copiar Seleções</button>
-                        </div>
-                    </div>
-                </div>
+            <div>
+                <span class="betslip-field-label">Odd Total</span>
+                <span id="slipOdd" style="font-weight: 800; color: var(--gold); font-size: 1rem;">1.00</span>
             </div>
-        </div>
-
-        <!-- TAB 3: ANALISADOR -->
-        <div id="analise" class="tab-content">
-            <div class="analyzer-box" style="max-width: 600px; margin: 0 auto; background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 30px;">
-                <h2 style="margin-top: 0; text-align: center; color: var(--gold);"><i class="fa-solid fa-calculator"></i> Analisador Rápido de Stake</h2>
-                <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 25px;">Calcula a entrada ideal para manter a banca segura.</p>
-
-                <div class="form-group">
-                    <label>Banca Atual (NOK):</label>
-                    <input type="number" id="inputBanca" class="form-control" value="50.55" oninput="calcularAposta()">
-                </div>
-
-                <div class="form-group">
-                    <label>Odd do Bilhete / Evento:</label>
-                    <input type="number" id="inputOdd" class="form-control" placeholder="Ex: 1.85" step="0.01" oninput="calcularAposta()">
-                </div>
-
-                <div class="form-group">
-                    <label>Nível de Confiança:</label>
-                    <select id="selectConfianca" class="form-control" onchange="calcularAposta()">
-                        <option value="0.03">Baixa (3% da Banca - Conservador)</option>
-                        <option value="0.05" selected>Média (5% da Banca - Padrão)</option>
-                        <option value="0.10">Alta / Challenge Ronda (10%+)</option>
-                    </select>
-                </div>
-
-                <div class="result-box">
-                    <div style="color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase;">Stake Recomendada:</div>
-                    <div id="resStake" style="font-size: 2rem; font-weight: 800; color: white; margin: 5px 0;">0.00 NOK</div>
-                    
-                    <div style="color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; margin-top: 15px;">Lucro Potencial Esperado:</div>
-                    <div id="resLucro" style="font-size: 1.4rem; font-weight: 700; color: var(--green);">+0.00 NOK</div>
-
-                    <div id="resStatus" class="status-pill" style="background: rgba(255,255,255,0.05); color: var(--text-muted);">
-                        Insira a Odd para analisar
-                    </div>
-                </div>
+            <div>
+                <span class="betslip-field-label">Stake (NOK)</span>
+                <input type="number" id="slipStake" value="50" class="stake-input" oninput="updateSlip()">
+            </div>
+            <div>
+                <span class="betslip-field-label">Retorno Potencial</span>
+                <span id="slipReturn" style="font-weight: 800; color: var(--green); font-size: 1rem;">0.00 NOK</span>
             </div>
         </div>
-
-        <!-- TAB 4: SIMULADOR 10K -->
-        <div id="simulador" class="tab-content">
-            <div class="card" style="text-align: center; padding: 40px;">
-                <h2 style="color: var(--gold); margin-top: 0;"><i class="fa-solid fa-fire"></i> Plano da Escalada 10K</h2>
-                <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto 30px auto;">
-                    A estratégia baseia-se em efetuar 10 rondas consecutivas com odds médias de ~1.70 a 2.00 reinvestindo os ganhos.
-                </p>
-                <div class="table-responsive" style="max-width: 700px; margin: 0 auto;">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Ronda</th>
-                                <th>Entrada (NOK)</th>
-                                <th>Odd Média</th>
-                                <th>Retorno Alvo (NOK)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>R1</td><td>50 NOK</td><td>2.00</td><td>100 NOK</td></tr>
-                            <tr><td>R2</td><td>100 NOK</td><td>1.80</td><td>180 NOK</td></tr>
-                            <tr><td>R3</td><td>180 NOK</td><td>1.75</td><td>315 NOK</td></tr>
-                            <tr><td>R4</td><td>315 NOK</td><td>1.70</td><td>535 NOK</td></tr>
-                            <tr><td>R5</td><td>535 NOK</td><td>1.70</td><td>910 NOK</td></tr>
-                            <tr><td>...</td><td>...</td><td>...</td><td>...</td></tr>
-                            <tr style="background: rgba(245,158,11,0.1);"><td style="color: var(--gold); font-weight: bold;">R10</td><td>5.800 NOK</td><td>1.75</td><td style="color: var(--gold); font-weight: bold;">10.150 NOK</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+        <div style="display: flex; gap: 10px;">
+            <button class="btn-action" onclick="alert('História gerada para partilha!')"><i class="fa-solid fa-camera"></i> Story</button>
+            <button class="btn-clear" onclick="clearSlip()">Limpar</button>
         </div>
-
     </div>
 
     <script>
-        function switchTab(tabId, event) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            
-            document.getElementById(tabId).classList.add('active');
-            event.currentTarget.classList.add('active');
-        }
-
-        // GERADOR DA IA DE MÚLTIPLAS
-        const baseJogosIA = [
-            { equipa: "Benfica vs Gil Vicente", mercado: "Vitória Benfica (1)", odd: 1.38 },
-            { equipa: "Porto vs Casa Pia", mercado: "Mais de 1.5 Golos", odd: 1.30 },
-            { equipa: "Real Madrid vs Valencia", mercado: "Vitória Real Madrid", odd: 1.45 },
-            { equipa: "Manchester City vs Everton", mercado: "1X e Menos de 4.5 Golos", odd: 1.25 },
-            { equipa: "Sporting CP vs Rio Ave", mercado: "Vitória Sporting CP", odd: 1.35 },
-            { equipa: "Bayer Leverkusen vs Bochum", mercado: "Mais de 2.5 Golos", odd: 1.50 }
+        // BASE DE DADOS COM JOGOS FUTUROS REAIS (LIGA PORTUGAL E PREMIER LEAGUE)
+        const baseJogos = [
+            { 
+                id: 1, 
+                liga: "PT Liga Portugal", 
+                pais: "PORTUGAL", 
+                equipas: "Sporting CP vs Vitória SC", 
+                data: "14/08/2026", 
+                opcoes: [
+                    { label: "Vitória Sporting (1)", odd: 1.35 }, 
+                    { label: "Ambas Marcam (Sim)", odd: 1.85 }, 
+                    { label: "Over 2.5 Golos", odd: 1.65 }
+                ] 
+            },
+            { 
+                id: 2, 
+                liga: "PT Liga Portugal", 
+                pais: "PORTUGAL", 
+                equipas: "Gil Vicente vs Arouca", 
+                data: "16/08/2026", 
+                opcoes: [
+                    { label: "Ambas Marcam (Sim)", odd: 1.75 }, 
+                    { label: "Vitória Gil Vicente (1)", odd: 2.20 }, 
+                    { label: "Over 2.5 Golos", odd: 1.90 }
+                ] 
+            },
+            { 
+                id: 3, 
+                liga: "PT Liga Portugal", 
+                pais: "PORTUGAL", 
+                equipas: "Estrela da Amadora vs Benfica", 
+                data: "17/08/2026", 
+                opcoes: [
+                    { label: "Vitória Benfica (2)", odd: 1.32 }, 
+                    { label: "Benfica -1.5 HC", odd: 1.85 }, 
+                    { label: "Over 2.5 Golos", odd: 1.60 }
+                ] 
+            },
+            { 
+                id: 4, 
+                liga: "Premier League", 
+                pais: "INGLATERRA", 
+                equipas: "Manchester City vs Newcastle United", 
+                data: "18/08/2026", 
+                opcoes: [
+                    { label: "Vitória Man City (1)", odd: 1.45 }, 
+                    { label: "Over 2.5 Golos", odd: 1.55 }, 
+                    { label: "Ambas Marcam (Sim)", odd: 1.65 }
+                ] 
+            },
+            { 
+                id: 5, 
+                liga: "ES La Liga", 
+                pais: "ESPANHA", 
+                equipas: "Real Madrid vs Valencia", 
+                data: "16/08/2026", 
+                opcoes: [
+                    { label: "Vitória Real (1)", odd: 1.40 }, 
+                    { label: "Over 2.5 Golos", odd: 1.70 }, 
+                    { label: "Ambas Marcam (Sim)", odd: 1.90 }
+                ] 
+            }
         ];
 
-        function gerarMultiplaIA() {
-            // Misturar e escolher 3 jogos aleatórios para criar uma múltipla equilibrada
-            let shuffled = [...baseJogosIA].sort(() => 0.5 - Math.random());
-            let selecionados = shuffled.slice(0, 3);
-            
-            let oddTotal = selecionados.reduce((acc, curr) => acc * curr.odd, 1);
-            
-            let html = '';
-            selecionados.forEach(j => {
-                html += `
-                    <div class="multi-card">
-                        <div>
-                            <strong style="color: white; font-size: 1rem;">${j.equipa}</strong>
-                            <div style="color: var(--text-muted); font-size: 0.85rem; margin-top: 4px;"><i class="fa-solid fa-check-circle" style="color: var(--green);"></i> ${j.mercado}</div>
+        let selectedTips = [];
+        let ligaAtual = 'todas';
+
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            if (element) element.classList.add('active');
+        }
+
+        function renderJogos(liga = 'todas') {
+            ligaAtual = liga;
+            const container = document.getElementById('listaJogosContainer');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const filtrados = baseJogos.filter(j => liga === 'todas' || j.liga === liga);
+
+            filtrados.forEach(j => {
+                let html = `
+                    <div class="match-card">
+                        <div class="match-header">
+                            <div>
+                                <span class="league-label">${j.pais} &bull; ${j.data}</span>
+                                <div class="match-teams">${j.equipas}</div>
+                            </div>
+                            <span style="font-size: 0.75rem; color: var(--gold); font-weight: 700;"><i class="fa-solid fa-trophy"></i> ${j.liga}</span>
                         </div>
-                        <div style="font-size: 1.2rem; font-weight: 800; color: var(--gold);">${j.odd.toFixed(2)}</div>
-                    </div>
+                        <div class="markets-grid">
                 `;
+                j.opcoes.forEach(op => {
+                    let idAposta = `${j.equipas} - ${op.label}`;
+                    let isSelected = selectedTips.some(s => s.id === idAposta);
+                    html += `
+                        <div class="market-item">
+                            <span class="market-label">${op.label}</span>
+                            <button class="btn-odd ${isSelected ? 'active' : ''}" onclick="toggleAposta('${idAposta}', '${j.equipas}', '${op.label}', ${op.odd})">${op.odd.toFixed(2)}</button>
+                        </div>
+                    `;
+                });
+                html += `</div></div>`;
+                container.innerHTML += html;
             });
-
-            document.getElementById('aiSelectionsList').innerHTML = html;
-            document.getElementById('aiTotalOdd').innerText = oddTotal.toFixed(2);
-            document.getElementById('aiResultArea').style.display = 'block';
         }
 
-        function copiarMultipla() {
-            alert('Seleções copiadas com sucesso para o boletim!');
+        function filtrarLiga(liga, element) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            if (element) element.classList.add('active');
+            renderJogos(liga);
         }
 
-        // LÓGICA DO ANALISADOR
-        function calcularAposta() {
-            const banca = parseFloat(document.getElementById('inputBanca').value) || 0;
-            const odd = parseFloat(document.getElementById('inputOdd').value) || 0;
-            const percentagem = parseFloat(document.getElementById('selectConfianca').value);
+        function toggleAposta(id, jogo, selecao, odd) {
+            const index = selectedTips.findIndex(item => item.id === id);
+            if (index > -1) {
+                selectedTips.splice(index, 1);
+            } else {
+                selectedTips.push({ id, jogo, selecao, odd });
+            }
+            renderJogos(ligaAtual);
+            updateSlip();
+        }
 
-            if (odd <= 1.0) {
-                document.getElementById('resStake').innerText = '0.00 NOK';
-                document.getElementById('resLucro').innerText = '+0.00 NOK';
-                document.getElementById('resStatus').innerText = 'Insira uma Odd válida';
-                document.getElementById('resStatus').style.background = 'rgba(255,255,255,0.05)';
-                document.getElementById('resStatus').style.color = 'var(--text-muted)';
+        function updateSlip() {
+            const stake = parseFloat(document.getElementById('slipStake').value) || 0;
+            document.getElementById('slipCount').innerText = selectedTips.length + ' Jogo(s)';
+            if (selectedTips.length === 0) {
+                document.getElementById('slipOdd').innerText = '1.00';
+                document.getElementById('slipReturn').innerText = '0.00 NOK';
                 return;
             }
-
-            const stake = banca * percentagem;
-            const lucro = (stake * odd) - stake;
-
-            document.getElementById('resStake').innerText = stake.toFixed(2) + ' NOK';
-            document.getElementById('resLucro').innerText = '+' + lucro.toFixed(2) + ' NOK';
-
-            const statusEl = document.getElementById('resStatus');
-            if (odd >= 1.60 && odd <= 2.20) {
-                statusEl.innerText = '✅ ODD DENTRO DO PERFIL DE VALOR';
-                statusEl.style.background = 'rgba(16, 185, 129, 0.2)';
-                statusEl.style.color = 'var(--green)';
-            } else if (odd > 2.20) {
-                statusEl.innerText = '⚠️ ODD ALTA — RISCO ELEVADO';
-                statusEl.style.background = 'rgba(245, 158, 11, 0.2)';
-                statusEl.style.color = 'var(--gold)';
-            } else {
-                statusEl.innerText = 'ℹ️ ODD BAIXA — VALOR REDUZIDO';
-                statusEl.style.background = 'rgba(56, 189, 248, 0.2)';
-                statusEl.style.color = '#38bdf8';
-            }
+            let totalOdd = selectedTips.reduce((acc, item) => acc * item.odd, 1);
+            let totalReturn = totalOdd * stake;
+            document.getElementById('slipOdd').innerText = totalOdd.toFixed(2);
+            document.getElementById('slipReturn').innerText = totalReturn.toFixed(2) + ' NOK';
         }
 
-        // GRÁFICO DO DASHBOARD
-        const ctx = document.getElementById('chartEvolucao').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Start', 'R1', 'R2', 'R3', 'R4', 'R5', 'R6', 'R7', 'R8', 'R9', 'R10'],
-                datasets: [{
-                    label: 'Projeção (Odd ~1.70)',
-                    data: [50, 85, 145, 245, 415, 700, 1200, 2000, 3500, 6000, 10000],
-                    borderColor: '#dc2626',
-                    backgroundColor: 'rgba(220, 38, 38, 0.15)',
-                    fill: true,
-                    tension: 0.3,
-                    pointRadius: 5,
-                    pointBackgroundColor: '#dc2626'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { labels: { color: '#94a3b8' } } },
-                scales: {
-                    x: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } },
-                    y: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } }
-                }
-            }
-        });
+        function clearSlip() {
+            selectedTips = [];
+            renderJogos(ligaAtual);
+            updateSlip();
+        }
+
+        function gerarMultiplaIA() {
+            selectedTips = [];
+            let shuffled = [...baseJogos].sort(() => 0.5 - Math.random());
+            let selecionados = shuffled.slice(0, 2);
+            selecionados.forEach(j => {
+                let op = j.opcoes[0];
+                selectedTips.push({ id: `${j.equipas} - ${op.label}`, jogo: j.equipas, selecao: op.label, odd: op.odd });
+            });
+            renderJogos(ligaAtual);
+            updateSlip();
+
+            const resDiv = document.getElementById('genResult');
+            resDiv.style.display = 'block';
+            resDiv.innerHTML = `
+                <div style="font-weight: 800; color: var(--gold); margin-bottom: 8px;"><i class="fa-solid fa-circle-check"></i> Múltipla Gerada com Sucesso!</div>
+                <div style="font-size: 0.9rem; color: var(--text-muted);">Adicionada automaticamente ao teu boletim em baixo. Confere as seleções e a Odd Total.</div>
+            `;
+        }
+
+        window.onload = function() {
+            renderJogos('todas');
+            const ctx = document.getElementById('chartEvolucao').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Start', 'R1', 'R2', 'R3', 'R4', 'R5', 'R6', 'R7', 'R8', 'R9', 'R10'],
+                    datasets: [{
+                        data: [50, 85, 145, 245, 415, 700, 1200, 2000, 3500, 6000, 10000],
+                        borderColor: '#fbbf24',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true,
+                        backgroundColor: 'rgba(251, 191, 36, 0.05)'
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+        };
     </script>
 </body>
 </html>
