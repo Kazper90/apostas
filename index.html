@@ -496,49 +496,57 @@
         let ligaAtual = 'todas';
 
 async function carregarJogosDaAPI() {
-    jogosDatabase = [
-        {
-            id: 1,
-            liga: "Liga Portugal",
-            equipas: "Sporting vs Vitória SC",
-            hRating: 8,
-            aRating: 5,
-            opcoes: [
-                { label: "Vitória Sporting", odd: 1.45 },
-                { label: "Empate", odd: 4.20 },
-                { label: "Vitória Vitória", odd: 7.00 }
-            ]
-        },
-        {
-            id: 2,
-            liga: "Premier League",
-            equipas: "Arsenal vs Chelsea",
-            hRating: 9,
-            aRating: 7,
-            opcoes: [
-                { label: "Vitória Arsenal", odd: 1.75 },
-                { label: "Empate", odd: 3.60 },
-                { label: "Vitória Chelsea", odd: 4.50 }
-            ]
-        },
-        {
-            id: 3,
-            liga: "La Liga",
-            equipas: "Real Madrid vs Barcelona",
-            hRating: 9,
-            aRating: 9,
-            opcoes: [
-                { label: "Vitória Real", odd: 2.10 },
-                { label: "Empate", odd: 3.50 },
-                { label: "Vitória Barcelona", odd: 3.20 }
-            ]
-        }
-    ];
+    try {
+        const SUA_API_KEY = "e89eb735584b4ec4a5aca34fa4e91e53"; // Insere aqui a tua chave gratuita do football-data.org
+        
+        const res = await fetch('https://api.football-data.org/v4/matches', {
+            headers: {
+                'X-Auth-Token': SUA_API_KEY
+            }
+        });
+        
+        if (!res.ok) throw new Error('Erro ao ligar à API');
+        
+        const data = await res.json();
+        const matchesList = data.matches || [];
+        
+        jogosDatabase = matchesList.map((match, index) => {
+            return {
+                id: match.id || index + 1,
+                liga: match.competition ? match.competition.name : "Outras Ligas",
+                equipas: `${match.homeTeam.name} vs ${match.awayTeam.name}`,
+                hRating: 7,
+                aRating: 7,
+                opcoes: [
+                    { label: `Vitória ${match.homeTeam.name}`, odd: 1.80 },
+                    { label: "Empate", odd: 3.40 },
+                    { label: `Vitória ${match.awayTeam.name}`, odd: 4.00 }
+                ]
+            };
+        });
 
-    renderJogos(ligaAtual);
-    if (typeof popularSelectIA === 'function') popularSelectIA();
+    } catch (e) {
+        console.warn("A usar dados de segurança (Fallback):", e);
+        jogosDatabase = [
+            {
+                id: 1,
+                liga: "Liga Portugal",
+                equipas: "Sporting vs Vitória SC",
+                hRating: 8,
+                aRating: 5,
+                opcoes: [
+                    { label: "Vitória Sporting", odd: 1.45 },
+                    { label: "Empate", odd: 4.20 },
+                    { label: "Vitória Vitória", odd: 7.00 }
+                ]
+            }
+        ];
+    } finally {
+        renderJogos(ligaAtual);
+        if (typeof popularSelectIA === 'function') popularSelectIA();
+    }
 }
-
+        
         function renderJogos(liga = 'todas') {
             ligaAtual = liga;
             const container = document.getElementById('listaJogosContainer');
