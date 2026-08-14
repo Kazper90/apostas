@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vira Frangos — Challenge Rumo aos 10K & Prognósticos</title>
+    <title>Vira Frangos — Challenge 10K & IA Múltiplas</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -123,40 +123,45 @@
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* METRICS GRID */
-        .grid-4 {
+        /* GRID & CARDS */
+        .grid-3 {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-            gap: 16px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
         }
 
-        .metric-card {
+        .card {
             background: var(--bg-card);
             backdrop-filter: blur(12px);
             border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 20px;
+            border-radius: 16px;
+            padding: 24px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         }
 
-        .metric-title { color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; margin-bottom: 8px; }
-        .metric-value { font-size: 1.7rem; font-weight: 900; }
+        .card-title { color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; margin-bottom: 8px; }
+        .card-value { font-size: 1.9rem; font-weight: 900; }
         .gold { color: var(--gold); }
+        .red { color: var(--primary-red); }
         .blue { color: #38bdf8; }
+
+        .progress-bar { width: 100%; height: 6px; background: var(--border-color); border-radius: 3px; margin-top: 12px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--gold); width: 0.5%; }
+
+        /* TABLES */
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; text-align: left; }
+        th, td { padding: 14px 16px; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; }
+        th { color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; }
+
+        .badge-live { background: rgba(251, 191, 36, 0.15); color: var(--gold); border: 1px solid rgba(251, 191, 36, 0.4); padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; display: inline-block; }
 
         /* SECTION & FILTERS */
         .section-title { color: var(--text-main); margin-bottom: 16px; font-size: 1.25rem; font-weight: 800; display: flex; align-items: center; gap: 10px; }
         .section-title i { color: var(--gold); }
 
-        .filter-bar {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 24px;
-            overflow-x: auto;
-            padding-bottom: 6px;
-        }
-
+        .filter-bar { display: flex; gap: 10px; margin-bottom: 24px; overflow-x: auto; padding-bottom: 6px; }
         .filter-btn {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -169,7 +174,6 @@
             white-space: nowrap;
             transition: var(--transition);
         }
-
         .filter-btn:hover { border-color: var(--gold); color: white; }
         .filter-btn.active { background: var(--gold); color: #060913; font-weight: 800; border-color: var(--gold); box-shadow: 0 4px 15px var(--gold-glow); }
 
@@ -183,7 +187,6 @@
             margin-bottom: 16px;
             transition: var(--transition);
         }
-
         .match-card:hover { border-color: rgba(251, 191, 36, 0.3); }
 
         .match-header {
@@ -227,7 +230,6 @@
             text-align: center;
             transition: var(--transition);
         }
-
         .btn-odd:hover { background: rgba(251, 191, 36, 0.2); }
         .btn-odd.active { background: var(--gold); color: #060913; box-shadow: 0 0 15px var(--gold-glow); }
 
@@ -258,115 +260,165 @@
         .btn-clear { background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); padding: 8px 16px; cursor: pointer; border-radius: 8px; font-weight: 600; }
         .btn-clear:hover { border-color: var(--primary-red); color: var(--primary-red); }
 
-        /* AI BOX & FAQ */
-        .card-box { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 30px; }
+        .ai-btn {
+            background: linear-gradient(135deg, var(--gold), #d97706);
+            color: #060913;
+            border: none;
+            padding: 14px 28px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 20px var(--gold-glow);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .ai-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(251, 191, 36, 0.4); }
     </style>
 </head>
 <body>
 
-    <!-- NAVBAR COM AS 5 OPÇÕES DA IMAGEM -->
+    <!-- NAVBAR -->
     <nav class="navbar">
         <div class="nav-tabs">
-            <button class="tab-btn active" onclick="switchTab('prognosticos', this)"><i class="fa-solid fa-list-check"></i> Todos os Jogos</button>
+            <button class="tab-btn active" onclick="switchTab('dashboard', this)"><i class="fa-solid fa-chart-line"></i> Dashboard</button>
+            <button class="tab-btn" onclick="switchTab('prognosticos', this)"><i class="fa-solid fa-futbol"></i> Todos os Jogos</button>
             <button class="tab-btn" onclick="switchTab('gerador-multi', this)"><i class="fa-solid fa-wand-magic-sparkles" style="color: var(--gold);"></i> Gerador Múltiplas</button>
             <button class="tab-btn" onclick="switchTab('ia-predictor', this)"><i class="fa-solid fa-robot"></i> IA Predictor</button>
-            <button class="tab-btn" onclick="switchTab('dashboard', this)"><i class="fa-solid fa-chart-line"></i> Challenge 10K</button>
             <button class="tab-btn" onclick="switchTab('faq', this)"><i class="fa-solid fa-circle-question"></i> FAQ</button>
         </div>
     </nav>
 
-    <!-- CABEÇALHO COM LOGÓTIPO -->
+    <!-- HEADER & LOGO -->
     <header class="header-banner">
         <div class="header-logo-wrapper">
             <img src="https://raw.githubusercontent.com/Kazper90/apostas/main/ViraFrangosLogo.jpg" alt="Vira Frangos Logo" class="header-logo" onerror="this.onerror=null; this.src='ViraFrangosLogo.jpg';">
         </div>
         <div>
-            <span class="badge-base"><i class="fa-solid fa-fire"></i> Base de Dados Completa de Jogos</span>
+            <span class="badge-base"><i class="fa-solid fa-fire"></i> Desafio Ativo</span>
         </div>
         <h1 class="main-title">O Challenge dos <span>10K</span></h1>
+        <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 8px; font-weight: 500;">Diário Oficial de Apostas &amp; Evolução de Capital</p>
     </header>
 
     <main class="container">
 
-        <!-- TAB 1: TODOS OS JOGOS -->
-        <section id="prognosticos" class="tab-content active">
+        <!-- TAB 1: DASHBOARD -->
+        <section id="dashboard" class="tab-content active">
+            <div class="grid-3">
+                <div class="card">
+                    <div class="card-title">Banca Atual (Challenge)</div>
+                    <div class="card-value gold">50,55 NOK</div>
+                    <div class="progress-bar"><div class="progress-fill"></div></div>
+                    <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 8px;">Progresso: 0.5% rumo aos 10.000 NOK</p>
+                </div>
+                <div class="card">
+                    <div class="card-title">Ronda #1 em Jogo</div>
+                    <div class="card-value red">105,65 NOK</div>
+                    <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 8px;">Retorno Potencial (Odd Total: 2.09)</p>
+                </div>
+                <div class="card">
+                    <div class="card-title">Reserva de Emergência</div>
+                    <div class="card-value blue">200,00 NOK</div>
+                    <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 8px;">Capital Protegido Intocável</p>
+                </div>
+            </div>
+
+            <div class="card" style="margin-bottom: 25px;">
+                <div class="card-title" style="margin-bottom: 15px;">Curva de Evolução do Challenge</div>
+                <div style="height: 300px;"><canvas id="chartEvolucao"></canvas></div>
+            </div>
+
+            <div class="card">
+                <div class="card-title" style="margin-bottom: 15px;">Últimas Rondas Registadas</div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Ronda</th>
+                                <th>Data</th>
+                                <th>Entrada / Jogos</th>
+                                <th>Odd</th>
+                                <th>Stake</th>
+                                <th>Retorno</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><b>#1</b></td>
+                                <td>14/08/2026</td>
+                                <td>
+                                    • Telstar vs Sparta Rotterdam (BTTS Sim)<br>
+                                    • Galatasaray vs Çorum FK (1X2)<br>
+                                    • Sporting CP vs Vitória SC (1X2)
+                                </td>
+                                <td><b>2.09</b></td>
+                                <td>50,55 NOK</td>
+                                <td>105,65 NOK</td>
+                                <td><span class="badge-live">EM JOGO</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: TODOS OS JOGOS (FUTUROS E HOJE - SOFASCORE DATA) -->
+        <section id="prognosticos" class="tab-content">
             <h2 class="section-title"><i class="fa-solid fa-futbol"></i> Jogos em Destaque & Odds Disponíveis</h2>
             
             <div class="filter-bar" id="ligaFilterBar">
                 <button class="filter-btn active" onclick="filtrarLiga('todas', this)">Todas as Ligas</button>
-                <button class="filter-btn" onclick="filtrarLiga('PT Liga Portugal', this)">PT Liga Portugal</button>
+                <button class="filter-btn" onclick="filtrarLiga('Liga Portugal', this)">Liga Portugal</button>
                 <button class="filter-btn" onclick="filtrarLiga('Premier League', this)">Premier League</button>
-                <button class="filter-btn" onclick="filtrarLiga('ES La Liga', this)">ES La Liga</button>
-                <button class="filter-btn" onclick="filtrarLiga('Outras Ligas', this)">Outras Ligas</button>
+                <button class="filter-btn" onclick="filtrarLiga('Championship', this)">Championship</button>
+                <button class="filter-btn" onclick="filtrarLiga('La Liga', this)">La Liga</button>
+                <button class="filter-btn" onclick="filtrarLiga('Serie A', this)">Serie A</button>
+                <button class="filter-btn" onclick="filtrarLiga('Bundesliga', this)">Bundesliga</button>
+                <button class="filter-btn" onclick="filtrarLiga('Ligue 1', this)">Ligue 1</button>
+                <button class="filter-btn" onclick="filtrarLiga('Süper Lig', this)">Süper Lig</button>
+                <button class="filter-btn" onclick="filtrarLiga('Eredivisie', this)">Eredivisie</button>
             </div>
 
             <div id="listaJogosContainer"></div>
         </section>
 
-        <!-- TAB 2: GERADOR MÚLTIPLAS -->
+        <!-- TAB 3: GERADOR MÚLTIPLAS (IA) -->
         <section id="gerador-multi" class="tab-content">
-            <div class="card-box" style="text-align: center; max-width: 700px; margin: 0 auto;">
+            <div class="card" style="text-align: center; max-width: 750px; margin: 0 auto;">
                 <h2 style="color: var(--gold); margin-bottom: 12px;"><i class="fa-solid fa-wand-magic-sparkles"></i> Gerador Inteligente de Múltiplas</h2>
-                <p style="color: var(--text-muted); margin-bottom: 25px;">O sistema cruza estatísticas em tempo real para otimizar o teu boletim de apostas com base nas partidas disponíveis.</p>
-                <button onclick="gerarMultiplaIA()" style="background: linear-gradient(135deg, var(--gold), #d97706); border: none; color: #060913; padding: 14px 28px; border-radius: 12px; font-weight: 800; cursor: pointer; font-size: 1rem;"><i class="fa-solid fa-bolt"></i> Gerar Múltipla Automática</button>
+                <p style="color: var(--text-muted); margin-bottom: 25px;">A IA analisa dados estatísticos em tempo real para combinar as melhores seleções com odds de valor para o teu Challenge.</p>
+                <button class="ai-btn" onclick="gerarMultiplaIA()"><i class="fa-solid fa-bolt"></i> Gerar Bilhete Múltiplo IA</button>
                 <div id="genResult" style="display: none; margin-top: 25px; background: rgba(6,9,19,0.8); border: 1px solid var(--gold); border-radius: 12px; padding: 20px; text-align: left;"></div>
             </div>
         </section>
 
-        <!-- TAB 3: IA PREDICTOR -->
+        <!-- TAB 4: IA PREDICTOR -->
         <section id="ia-predictor" class="tab-content">
-            <div class="card-box" style="max-width: 700px; margin: 0 auto;">
+            <div class="card" style="max-width: 750px; margin: 0 auto;">
                 <h2 style="color: var(--gold); margin-bottom: 12px;"><i class="fa-solid fa-robot"></i> IA Predictor Pro</h2>
-                <p style="color: var(--text-muted); margin-bottom: 20px;">Análise preditiva baseada em xG, histórico de confrontos diretos e forma atual das equipas.</p>
-                <div style="background: rgba(15, 23, 42, 0.6); padding: 16px; border-radius: 10px; border: 1px solid var(--border-color);">
-                    <strong>Próximo Jogo Analisado pela IA:</strong> Sporting CP vs Vitória SC<br>
-                    <span style="color: var(--green); display: block; margin-top: 8px;">Previsão: Vitória Sporting / Ambas Marcam (Sim) — Probabilidade de êxito: 78%</span>
+                <p style="color: var(--text-muted); margin-bottom: 20px;">Análise preditiva avançada baseada em xG, histórico de confrontos diretos e forma atual das equipas.</p>
+                <div style="background: rgba(15, 23, 42, 0.6); padding: 18px; border-radius: 12px; border: 1px solid var(--border-color);">
+                    <strong style="color: white; font-size: 1.05rem;">Próximo Jogo Analisado:</strong> Sporting CP vs Vitória SC<br>
+                    <span style="color: var(--green); display: block; margin-top: 10px; font-weight: 600;">Previsão: Vitória Sporting / Ambas Marcam (Sim) — Probabilidade de êxito: 78%</span>
                 </div>
-            </div>
-        </section>
-
-        <!-- TAB 4: CHALLENGE 10K (DASHBOARD) -->
-        <section id="dashboard" class="tab-content">
-            <div class="grid-4" style="margin-bottom: 25px;">
-                <div class="metric-card">
-                    <div class="metric-title">ROI Acumulado</div>
-                    <div class="metric-value gold">0,0%</div>
-                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 6px;">Início do Challenge</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-title">Win Rate (%)</div>
-                    <div class="metric-value gold">0%</div>
-                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 6px;">Ronda #1 em curso</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-title">Odd Total R1</div>
-                    <div class="metric-value blue">2.09</div>
-                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 6px;">Em jogo</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-title">Lucro Total</div>
-                    <div class="metric-value gold">0,00 NOK</div>
-                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 6px;">A aguardar R1</div>
-                </div>
-            </div>
-
-            <div class="metric-card">
-                <div class="metric-title" style="margin-bottom: 15px;">Evolução Gráfica do Challenge</div>
-                <div style="height: 260px;"><canvas id="chartEvolucao"></canvas></div>
             </div>
         </section>
 
         <!-- TAB 5: FAQ -->
         <section id="faq" class="tab-content">
-            <div class="card-box" style="max-width: 800px; margin: 0 auto;">
+            <div class="card" style="max-width: 800px; margin: 0 auto;">
                 <h2 style="color: var(--gold); margin-bottom: 20px;"><i class="fa-solid fa-circle-question"></i> Perguntas Frequentes (FAQ)</h2>
-                <div style="margin-bottom: 15px;">
+                <div style="margin-bottom: 20px;">
                     <strong style="color: white; display: block; margin-bottom: 5px;">O que é o Challenge 10K?</strong>
                     <p style="color: var(--text-muted); font-size: 0.9rem;">É um desafio de gestão de banca rigoroso que visa multiplicar o capital inicial rumo aos 10.000 NOK através de rondas calculadas.</p>
                 </div>
                 <div>
                     <strong style="color: white; display: block; margin-bottom: 5px;">Como funcionam as Odds e os Prognósticos?</strong>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">As odds são atualizadas em tempo real com base nos calendários oficiais das principais ligas europeias e sul-americanas.</p>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">As odds são atualizadas em tempo real com base nos calendários oficiais e dados estatísticos avançados de ligas internacionais.</p>
                 </div>
             </div>
         </section>
@@ -386,7 +438,7 @@
             </div>
             <div>
                 <span class="betslip-field-label">Stake (NOK)</span>
-                <input type="number" id="slipStake" value="50" class="stake-input" oninput="updateSlip()">
+                <input type="number" id="slipStake" value="50.55" class="stake-input" oninput="updateSlip()">
             </div>
             <div>
                 <span class="betslip-field-label">Retorno Potencial</span>
@@ -400,67 +452,80 @@
     </div>
 
     <script>
-        // BASE DE DADOS COM JOGOS FUTUROS REAIS (LIGA PORTUGAL E PREMIER LEAGUE)
+        // BASE DE DADOS INTEGRAL DE JOGOS (LIGA PORTUGAL, PREMIER LEAGUE, CHAMPIONSHIP, LA LIGA, SERIE A, BUNDESLIGA, LIGUE 1, SÜPER LIG, EREDIVISIE)
         const baseJogos = [
+            // LIGA PORTUGAL
             { 
-                id: 1, 
-                liga: "PT Liga Portugal", 
-                pais: "PORTUGAL", 
-                equipas: "Sporting CP vs Vitória SC", 
-                data: "14/08/2026", 
-                opcoes: [
-                    { label: "Vitória Sporting (1)", odd: 1.35 }, 
-                    { label: "Ambas Marcam (Sim)", odd: 1.85 }, 
-                    { label: "Over 2.5 Golos", odd: 1.65 }
-                ] 
+                id: 1, liga: "Liga Portugal", pais: "PORTUGAL", equipas: "Sporting CP vs Vitória SC", data: "14/08/2026", 
+                opcoes: [{ label: "Vitória Sporting (1)", odd: 1.35 }, { label: "Ambas Marcam (Sim)", odd: 1.85 }, { label: "Over 2.5 Golos", odd: 1.65 }] 
             },
             { 
-                id: 2, 
-                liga: "PT Liga Portugal", 
-                pais: "PORTUGAL", 
-                equipas: "Gil Vicente vs Arouca", 
-                data: "16/08/2026", 
-                opcoes: [
-                    { label: "Ambas Marcam (Sim)", odd: 1.75 }, 
-                    { label: "Vitória Gil Vicente (1)", odd: 2.20 }, 
-                    { label: "Over 2.5 Golos", odd: 1.90 }
-                ] 
+                id: 2, liga: "Liga Portugal", pais: "PORTUGAL", equipas: "Gil Vicente vs Arouca", data: "16/08/2026", 
+                opcoes: [{ label: "Ambas Marcam (Sim)", odd: 1.75 }, { label: "Vitória Gil Vicente (1)", odd: 2.20 }, { label: "Over 2.5 Golos", odd: 1.90 }] 
             },
             { 
-                id: 3, 
-                liga: "PT Liga Portugal", 
-                pais: "PORTUGAL", 
-                equipas: "Estrela da Amadora vs Benfica", 
-                data: "17/08/2026", 
-                opcoes: [
-                    { label: "Vitória Benfica (2)", odd: 1.32 }, 
-                    { label: "Benfica -1.5 HC", odd: 1.85 }, 
-                    { label: "Over 2.5 Golos", odd: 1.60 }
-                ] 
+                id: 3, liga: "Liga Portugal", pais: "PORTUGAL", equipas: "Estrela da Amadora vs Benfica", data: "17/08/2026", 
+                opcoes: [{ label: "Vitória Benfica (2)", odd: 1.32 }, { label: "Benfica -1.5 HC", odd: 1.85 }, { label: "Over 2.5 Golos", odd: 1.60 }] 
             },
             { 
-                id: 4, 
-                liga: "Premier League", 
-                pais: "INGLATERRA", 
-                equipas: "Manchester City vs Newcastle United", 
-                data: "18/08/2026", 
-                opcoes: [
-                    { label: "Vitória Man City (1)", odd: 1.45 }, 
-                    { label: "Over 2.5 Golos", odd: 1.55 }, 
-                    { label: "Ambas Marcam (Sim)", odd: 1.65 }
-                ] 
+                id: 4, liga: "Liga Portugal", pais: "PORTUGAL", equipas: "FC Porto vs Braga", data: "18/08/2026", 
+                opcoes: [{ label: "Vitória FC Porto (1)", odd: 1.70 }, { label: "Ambas Marcam (Sim)", odd: 1.72 }, { label: "Over 2.5 Golos", odd: 1.80 }] 
+            },
+
+            // PREMIER LEAGUE
+            { 
+                id: 5, liga: "Premier League", pais: "INGLATERRA", equipas: "Manchester City vs Newcastle United", data: "18/08/2026", 
+                opcoes: [{ label: "Vitória Man City (1)", odd: 1.45 }, { label: "Over 2.5 Golos", odd: 1.55 }, { label: "Ambas Marcam (Sim)", odd: 1.65 }] 
             },
             { 
-                id: 5, 
-                liga: "ES La Liga", 
-                pais: "ESPANHA", 
-                equipas: "Real Madrid vs Valencia", 
-                data: "16/08/2026", 
-                opcoes: [
-                    { label: "Vitória Real (1)", odd: 1.40 }, 
-                    { label: "Over 2.5 Golos", odd: 1.70 }, 
-                    { label: "Ambas Marcam (Sim)", odd: 1.90 }
-                ] 
+                id: 6, liga: "Premier League", pais: "INGLATERRA", equipas: "Arsenal vs Chelsea", data: "19/08/2026", 
+                opcoes: [{ label: "Vitória Arsenal (1)", odd: 1.95 }, { label: "Ambas Marcam (Sim)", odd: 1.68 }, { label: "Under 2.5 Golos", odd: 1.90 }] 
+            },
+
+            // CHAMPIONSHIP
+            { 
+                id: 7, liga: "Championship", pais: "INGLATERRA", equipas: "Leeds United vs West Bromwich", data: "15/08/2026", 
+                opcoes: [{ label: "Vitória Leeds (1)", odd: 1.80 }, { label: "Ambas Marcam (Sim)", odd: 1.85 }, { label: "Over 2.5 Golos", odd: 2.05 }] 
+            },
+
+            // LA LIGA
+            { 
+                id: 8, liga: "La Liga", pais: "ESPANHA", equipas: "Real Madrid vs Valencia", data: "16/08/2026", 
+                opcoes: [{ label: "Vitória Real (1)", odd: 1.40 }, { label: "Over 2.5 Golos", odd: 1.70 }, { label: "Ambas Marcam (Sim)", odd: 1.90 }] 
+            },
+            { 
+                id: 9, liga: "La Liga", pais: "ESPANHA", equipas: "Barcelona vs Villarreal", data: "17/08/2026", 
+                opcoes: [{ label: "Vitória Barcelona (1)", odd: 1.50 }, { label: "Over 2.5 Golos", odd: 1.60 }, { label: "Ambas Marcam (Sim)", odd: 1.72 }] 
+            },
+
+            // SERIE A
+            { 
+                id: 10, liga: "Serie A", pais: "ITÁLIA", equipas: "Inter de Milão vs Juventus", data: "22/08/2026", 
+                opcoes: [{ label: "Vitória Inter (1)", odd: 2.10 }, { label: "Empate (X)", odd: 3.20 }, { label: "Under 2.5 Golos", odd: 1.75 }] 
+            },
+
+            // BUNDESLIGA
+            { 
+                id: 11, liga: "Bundesliga", pais: "ALEMANHA", equipas: "Bayern Munique vs Borussia Dortmund", data: "23/08/2026", 
+                opcoes: [{ label: "Vitória Bayern (1)", odd: 1.62 }, { label: "Over 3.5 Golos", odd: 2.10 }, { label: "Ambas Marcam (Sim)", odd: 1.48 }] 
+            },
+
+            // LIGUE 1
+            { 
+                id: 12, liga: "Ligue 1", pais: "FRANÇA", equipas: "Paris Saint-Germain vs Marseille", data: "24/08/2026", 
+                opcoes: [{ label: "Vitória PSG (1)", odd: 1.55 }, { label: "Over 2.5 Golos", odd: 1.65 }, { label: "Ambas Marcam (Sim)", odd: 1.80 }] 
+            },
+
+            // SÜPER LIG
+            { 
+                id: 13, liga: "Süper Lig", pais: "TURQUIA", equipas: "Galatasaray vs Fenerbahçe", data: "25/08/2026", 
+                opcoes: [{ label: "Vitória Galatasaray (1)", odd: 2.25 }, { label: "Ambas Marcam (Sim)", odd: 1.60 }, { label: "Over 2.5 Golos", odd: 1.85 }] 
+            },
+
+            // EREDIVISIE
+            { 
+                id: 14, liga: "Eredivisie", pais: "PAÍSES BAIXOS", equipas: "Ajax vs PSV Eindhoven", data: "26/08/2026", 
+                opcoes: [{ label: "Vitória Ajax (1)", odd: 2.30 }, { label: "Over 2.5 Golos", odd: 1.55 }, { label: "Ambas Marcam (Sim)", odd: 1.50 }] 
             }
         ];
 
@@ -481,6 +546,11 @@
             container.innerHTML = '';
 
             const filtrados = baseJogos.filter(j => liga === 'todas' || j.liga === liga);
+
+            if (filtrados.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding: 30px; color: var(--text-muted);">Sem jogos disponíveis para esta liga de momento.</div>`;
+                return;
+            }
 
             filtrados.forEach(j => {
                 let html = `
@@ -567,21 +637,33 @@
 
         window.onload = function() {
             renderJogos('todas');
+            updateSlip();
             const ctx = document.getElementById('chartEvolucao').getContext('2d');
             new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: ['Start', 'R1', 'R2', 'R3', 'R4', 'R5', 'R6', 'R7', 'R8', 'R9', 'R10'],
                     datasets: [{
+                        label: 'Projeção (Odd ~1.70)',
                         data: [50, 85, 145, 245, 415, 700, 1200, 2000, 3500, 6000, 10000],
                         borderColor: '#fbbf24',
                         borderWidth: 3,
                         tension: 0.4,
                         fill: true,
-                        backgroundColor: 'rgba(251, 191, 36, 0.05)'
+                        backgroundColor: 'rgba(251, 191, 36, 0.05)',
+                        pointRadius: 5,
+                        pointBackgroundColor: '#fbbf24'
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#94a3b8' } } },
+                    scales: {
+                        x: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } },
+                        y: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } }
+                    }
+                }
             });
         };
     </script>
