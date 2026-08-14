@@ -325,11 +325,11 @@
             <h2 style="color: var(--gold); margin-bottom: 10px;"><i class="fa-solid fa-futbol"></i> Jogos em Destaque &amp; Odds Disponíveis</h2>
             
             <div class="filter-bar">
-                <button class="filter-btn active" onclick="filtrarLiga('todas')">Todas as Ligas</button>
-                <button class="filter-btn" onclick="filtrarLiga('Portugal')">🇵🇹 Liga Portugal</button>
-                <button class="filter-btn" onclick="filtrarLiga('Inglaterra')">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Premier League</button>
-                <button class="filter-btn" onclick="filtrarLiga('Espanha')">🇪🇸 La Liga</button>
-                <button class="filter-btn" onclick="filtrarLiga('Outras')">🌍 Outras Ligas</button>
+              <button class="filter-btn active" onclick="filtrarLiga('todas', this)">Todas as Ligas</button>
+<button class="filter-btn" onclick="filtrarLiga('Liga Portugal', this)">PT Liga Portugal</button>
+<button class="filter-btn" onclick="filtrarLiga('Premier League', this)">Premier League</button>
+<button class="filter-btn" onclick="filtrarLiga('La Liga', this)">La Liga</button>
+<button class="filter-btn" onclick="filtrarLiga('Outras Ligas', this)">Outras Ligas</button>
             </div>
 
             <div id="listaJogosContainer">
@@ -552,13 +552,14 @@
                 container.innerHTML += html;
             });
         }
-
-        function filtrarLiga(liga) {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-            renderJogos(liga);
-        }
-
+function filtrarLiga(liga, element) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    if (element) {
+        element.classList.add('active');
+    }
+    renderJogos(liga);
+}
+       
         function toggleAposta(id, jogo, selecao, odd) {
             const index = selectedTips.findIndex(item => item.id === id);
             if (index > -1) {
