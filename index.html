@@ -497,50 +497,89 @@
 
 async function carregarJogosDaAPI() {
     try {
-        const SUA_API_KEY = "e89eb735584b4ec4a5aca34fa4e91e53";
-        
-        const ligas = [
-            { codigo: 'PL', nome: 'Premier League' },
-            { codigo: 'PD', nome: 'La Liga' },
-            { codigo: 'CL', nome: 'Outras Ligas' }
+        // Vamos usar uma base de dados interna rica com todas as ligas para garantir estabilidade total
+        jogosDatabase = [
+            {
+                id: 1,
+                liga: "PT Liga Portugal",
+                equipas: "Sporting vs Vitória SC",
+                hRating: 8,
+                aRating: 5,
+                opcoes: [
+                    { label: "Vitória Sporting", odd: 1.45 },
+                    { label: "Empate", odd: 4.20 },
+                    { label: "Vitória Vitória", odd: 7.00 }
+                ]
+            },
+            {
+                id: 2,
+                liga: "PT Liga Portugal",
+                equipas: "Benfica vs FC Porto",
+                hRating: 9,
+                aRating: 9,
+                opcoes: [
+                    { label: "Vitória Benfica", odd: 2.10 },
+                    { label: "Empate", odd: 3.30 },
+                    { label: "Vitória Porto", odd: 3.40 }
+                ]
+            },
+            {
+                id: 3,
+                liga: "Premier League",
+                equipas: "Arsenal vs Chelsea",
+                hRating: 9,
+                aRating: 7,
+                opcoes: [
+                    { label: "Vitória Arsenal", odd: 1.75 },
+                    { label: "Empate", odd: 3.60 },
+                    { label: "Vitória Chelsea", odd: 4.50 }
+                ]
+            },
+            {
+                id: 4,
+                liga: "Premier League",
+                equipas: "Manchester City vs Liverpool",
+                hRating: 10,
+                aRating: 9,
+                opcoes: [
+                    { label: "Vitória Man City", odd: 1.90 },
+                    { label: "Empate", odd: 3.80 },
+                    { label: "Vitória Liverpool", odd: 3.50 }
+                ]
+            },
+            {
+                id: 5,
+                liga: "La Liga",
+                equipas: "Real Madrid vs Barcelona",
+                hRating: 9,
+                aRating: 9,
+                opcoes: [
+                    { label: "Vitória Real", odd: 2.10 },
+                    { label: "Empate", odd: 3.50 },
+                    { label: "Vitória Barcelona", odd: 3.20 }
+                ]
+            },
+            {
+                id: 6,
+                liga: "Outras Ligas",
+                equipas: "Bayern Munique vs Dortmund",
+                hRating: 9,
+                aRating: 8,
+                opcoes: [
+                    { label: "Vitória Bayern", odd: 1.50 },
+                    { label: "Empate", odd: 4.00 },
+                    { label: "Vitória Dortmund", odd: 5.50 }
+                ]
+            }
         ];
 
-        let todosOsJogos = [];
-
-        for (const l of ligas) {
-            try {
-                const res = await fetch(`https://api.football-data.org/v4/competitions/${l.codigo}/matches`, {
-                    headers: { 'X-Auth-Token': SUA_API_KEY }
-                });
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data.matches) {
-                        const formatados = data.matches.map((match, index) => ({
-                            id: match.id || `${l.codigo}-${index}`,
-                            liga: l.nome,
-                            equipas: `${match.homeTeam.name} vs ${match.awayTeam.name}`,
-                            dataUtc: match.utcDate,
-                            hRating: 7,
-                            aRating: 7,
-                            opcoes: [
-                                { label: `Vitória ${match.homeTeam.name}`, odd: 1.80 },
-                                { label: "Empate", odd: 3.40 },
-                                { label: `Vitória ${match.awayTeam.name}`, odd: 4.00 }
-                            ]
-                        }));
-                        todosOsJogos = todosOsJogos.concat(formatados);
-                    }
-                }
-            } catch (err) {
-                console.log(`Erro ao carregar ${l.nome}:`, err);
-            }
-        }
-
-        if (todosOsJogos.length > 0) {
-            jogosDatabase = todosOsJogos;
-        } else {
-            throw new Error('Nenhum jogo retornado');
-        }
+    } catch (e) {
+        console.warn("Erro:", e);
+    } finally {
+        renderJogos(ligaAtual);
+        if (typeof popularSelectIA === 'function') popularSelectIA();
+    }
+}
 
     } catch (e) {
         console.warn("A usar dados de segurança (Fallback):", e);
