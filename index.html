@@ -497,33 +497,50 @@
 
 async function carregarJogosDaAPI() {
     try {
-        const SUA_API_KEY = "e89eb735584b4ec4a5aca34fa4e91e53"; // Insere aqui a tua chave gratuita do football-data.org
+        const SUA_API_KEY = "e89eb735584b4ec4a5aca34fa4e91e53";
         
-        const res = await fetch('https://api.football-data.org/v4/competitions/PL/matches', {
-            headers: {
-                'X-Auth-Token': SUA_API_KEY
+        const ligas = [
+            { codigo: 'PL', nome: 'Premier League' },
+            { codigo: 'PD', nome: 'La Liga' },
+            { codigo: 'CL', nome: 'Outras Ligas' }
+        ];
+
+        let todosOsJogos = [];
+
+        for (const l of ligas) {
+            try {
+                const res = await fetch(`https://api.football-data.org/v4/competitions/${l.codigo}/matches`, {
+                    headers: { 'X-Auth-Token': SUA_API_KEY }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.matches) {
+                        const formatados = data.matches.map((match, index) => ({
+                            id: match.id || `${l.codigo}-${index}`,
+                            liga: l.nome,
+                            equipas: `${match.homeTeam.name} vs ${match.awayTeam.name}`,
+                            dataUtc: match.utcDate, // Guarda a data real do jogo
+                            hRating: 7,
+                            aRating: 7,
+                            opcoes: [
+                                { label: `Vitória ${match.homeTeam.name}`, odd: 1.80 },
+                                { label: "Empate", odd: 3.40 },
+                                { label: `Vitória ${match.awayTeam.name}`, odd: 4.00 }
+                            ]
+                        }));
+                        todosOsJogos = todosOsJogos.concat(formatados);
+                    }
+                }
+            } catch (err) {
+                console.log(`Erro ao carregar ${l.nome}:`, err);
             }
-        });
-        
-        if (!res.ok) throw new Error('Erro ao ligar à API');
-        
-        const data = await res.json();
-        const matchesList = data.matches || [];
-        
-        jogosDatabase = matchesList.map((match, index) => {
-            return {
-                id: match.id || index + 1,
-               liga: "Premier League",
-                equipas: `${match.homeTeam.name} vs ${match.awayTeam.name}`,
-                hRating: 7,
-                aRating: 7,
-                opcoes: [
-                    { label: `Vitória ${match.homeTeam.name}`, odd: 1.80 },
-                    { label: "Empate", odd: 3.40 },
-                    { label: `Vitória ${match.awayTeam.name}`, odd: 4.00 }
-                ]
-            };
-        });
+        }
+
+        if (todosOsJogos.length > 0) {
+            jogosDatabase = todosOsJogos;
+        } else {
+            throw new Error('Nenhum jogo retornado');
+        }
 
     } catch (e) {
         console.warn("A usar dados de segurança (Fallback):", e);
@@ -541,6 +558,11 @@ async function carregarJogosDaAPI() {
                 ]
             }
         ];
+    } finally {
+        renderJogos(ligaAtual);
+        if (typeof popularSelectIA === 'function') popularSelectIA();
+    }
+}
     } finally {
         renderJogos(ligaAtual);
         if (typeof popularSelectIA === 'function') popularSelectIA();
