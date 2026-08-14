@@ -13,12 +13,11 @@ export default async function handler(req, res) {
     return;
   }
 
-  // A tua chave da Football-Data.org (podes colar a chave direta entre as aspas)
   const API_KEY = process.env.FOOTBALL_DATA_KEY || 'e89eb735584b4ec4a5aca34fa4e91e53';
 
   try {
-    // Pedido à API da Football-Data.org (exemplo: jogos agendados/próximos)
-    const apiRes = await fetch('https://api.football-data.org/v4/matches', {
+    // Pedido filtrado pelos próximos jogos agendados (compatível com o plano grátis)
+    const apiRes = await fetch('https://api.football-data.org/v4/matches?status=SCHEDULED', {
       headers: {
         'X-Auth-Token': API_KEY
       }
