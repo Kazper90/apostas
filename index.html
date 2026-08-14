@@ -519,7 +519,7 @@ async function carregarJogosDaAPI() {
                             id: match.id || `${l.codigo}-${index}`,
                             liga: l.nome,
                             equipas: `${match.homeTeam.name} vs ${match.awayTeam.name}`,
-                            dataUtc: match.utcDate, // Guarda a data real do jogo
+                            dataUtc: match.utcDate,
                             hRating: 7,
                             aRating: 7,
                             opcoes: [
@@ -541,6 +541,28 @@ async function carregarJogosDaAPI() {
         } else {
             throw new Error('Nenhum jogo retornado');
         }
+
+    } catch (e) {
+        console.warn("A usar dados de segurança (Fallback):", e);
+        jogosDatabase = [
+            {
+                id: 1,
+                liga: "Liga Portugal",
+                equipas: "Sporting vs Vitória SC",
+                hRating: 8,
+                aRating: 5,
+                opcoes: [
+                    { label: "Vitória Sporting", odd: 1.45 },
+                    { label: "Empate", odd: 4.20 },
+                    { label: "Vitória Vitória", odd: 7.00 }
+                ]
+            }
+        ];
+    } finally {
+        renderJogos(ligaAtual);
+        if (typeof popularSelectIA === 'function') popularSelectIA();
+    }
+}
 
     } catch (e) {
         console.warn("A usar dados de segurança (Fallback):", e);
