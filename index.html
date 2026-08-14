@@ -63,6 +63,18 @@
             border-color: var(--primary-red);
         }
 
+        .banner-container {
+            text-align: center;
+            padding: 20px 0 10px 0;
+            background: linear-gradient(to bottom, #090d16, var(--bg-color));
+            border-bottom: 1px solid var(--border);
+        }
+
+        .banner-container img {
+            max-height: 70px;
+            object-fit: contain;
+        }
+
         .container {
             max-width: 1100px;
             margin: 20px auto;
@@ -234,26 +246,31 @@
         </div>
     </div>
 
-    <!-- CABEÇALHO -->
-    <div style="text-align: center; padding: 25px 0 10px 0;">
-        <h1 style="color: #ffffff; font-size: 1.8rem; font-weight: 800; margin: 0; letter-spacing: 1.5px; text-transform: uppercase;">
+    <!-- BANNER / LOGÓTIPO & TÍTULO -->
+    <div class="banner-container">
+        <!-- Se tiveres uma imagem de logótipo, podes colocar aqui dentro da tag img (ex: src="logo.png") -->
+        <!-- <img src="logo.png" alt="Vira Frangos"> -->
+        <h1 style="color: #ffffff; font-size: 1.8rem; font-weight: 800; margin: 5px 0 15px 0; letter-spacing: 1.5px; text-transform: uppercase;">
             O CHALLENGE DOS <span style="color: #f59e0b;">10K</span>
         </h1>
+        <div style="font-size: 0.85rem; color: var(--gold); font-weight: 600; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;">
+            <i class="fa-solid fa-database"></i> Base de Dados Completa de Jogos
+        </div>
     </div>
 
     <div class="container">
 
         <!-- MÉTRICAS -->
         <div class="grid-4">
-            <div class="card"><div class="card-title">ROI Acumulado</div><div class="card-value gold">0,0%</div></div>
-            <div class="card"><div class="card-title">Win Rate (%)</div><div class="card-value gold">0%</div></div>
-            <div class="card"><div class="card-title">Odd Total R1</div><div class="card-value blue">2.09</div></div>
-            <div class="card"><div class="card-title">Lucro Total</div><div class="card-value gold">0,00 NOK</div></div>
+            <div class="card"><div class="card-title">ROI Acumulado</div><div class="card-value gold">0,0%</div><div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">Início do Challenge</div></div>
+            <div class="card"><div class="card-title">Win Rate (%)</div><div class="card-value gold">0%</div><div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">Ronda #1 em curso</div></div>
+            <div class="card"><div class="card-title">Odd Total R1</div><div class="card-value blue">2.09</div><div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">Em jogo</div></div>
+            <div class="card"><div class="card-title">Lucro Total</div><div class="card-value gold">0,00 NOK</div><div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">A aguardar R1</div></div>
         </div>
 
         <!-- TAB 1: JOGOS -->
         <div id="prognosticos" class="tab-content active">
-            <h2 style="color: var(--gold); margin-bottom: 10px;"><i class="fa-solid fa-futbol"></i> Jogos em Destaque & Odds Disponíveis</h2>
+            <h2 style="color: var(--gold); margin-bottom: 15px; font-size: 1.2rem;"><i class="fa-solid fa-futbol"></i> Jogos em Destaque & Odds Disponíveis</h2>
             
             <div class="filter-bar">
                 <button class="filter-btn active" onclick="filtrarLiga('todas', this)">Todas as Ligas</button>
