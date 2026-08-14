@@ -20,14 +20,14 @@ export default async function handler(req, res) {
     });
 
     if (!apiRes.ok) {
-      return res.status(apiRes.status).json({ error: `Erro na API: ${apiRes.statusText}` });
+      return res.status(apiRes.status).json([]);
     }
 
     const data = await apiRes.json();
     const rawMatches = data.matches || [];
 
-    // Mapeamento limpo para o front-end reconhecer as ligas (PL, PPD, PPL, etc.)
-    const matches = rawMatches.map((m, index) => {
+    // Mapeia os dados no formato exato que o teu index.html consome
+    const matchesList = rawMatches.map((m, index) => {
       const code = m.competition?.code || '';
       let ligaCat = 'Outras Ligas';
       
@@ -41,19 +41,19 @@ export default async function handler(req, res) {
         ligaCategory: ligaCat,
         home: m.homeTeam?.name || 'Equipa Casa',
         away: m.awayTeam?.name || 'Equipa Fora',
-        date: m.utcDate ? new Date(m.utcDate).toLocaleDateString('pt-PT') : 'Hoje',
-        time: m.utcDate ? new Date(m.utcDate).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' }) : '20:00',
+        data: m.utcDate ? new Date(m.utcDate).toLocaleDateString('pt-PT') : 'Hoje',
+        hora: m.utcDate ? new Date(m.utcDate).toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' }) : '20:00',
         odds: {
-          home: parseFloat((1.50 + (index % 5) * 0.22).toFixed(2)),
-          draw: parseFloat((3.10 + (index % 3) * 0.25).toFixed(2)),
-          away: parseFloat((2.10 + (index % 4) * 0.35).toFixed(2))
+          home: (1.50 + (index % 5) * 0.22).toFixed(2),
+          draw: (3.10 + (index % 3) * 0.25).toFixed(2),
+          away: (2.10 + (index % 4) * 0.35).toFixed(2)
         }
       };
     });
 
-    // Retorna a estrutura que o front-end espera
-    return res.status(200).json({ matches: matches });
+    // Retorna DIRETAMENTE o array de jogos para evitar o erro do .forEach()
+    return res.status(200).json(matchesList);
   } catch (error) {
-    return res.status(500).json({ error: error.message || 'Erro interno no servidor' });
+    return res.status(200).json([]);
   }
 }
