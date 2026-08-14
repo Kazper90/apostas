@@ -1,67 +1,34 @@
 export default async function handler(req, res) {
+  // Configurações de CORS para não bloquear o front-end
+  res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+  );
 
-  const API_KEY = process.env.FOOTBALL_DATA_KEY;
-
-  if (!API_KEY) {
-    return res.status(500).json({ error: 'Chave de API não configurada.' });
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
   }
 
-  const headers = { 'X-Auth-Token': API_KEY };
-
-  async function getTeamForm(teamId) {
-    try {
-      const response = await fetch(`https://api.football-data.org/v4/teams/${teamId}/matches?status=FINISHED&limit=5`, { headers });
-      const data = await response.json();
-
-      if (!data.matches) return ["E", "E", "E", "E", "E"];
-
-      return data.matches.map(m => {
-        const isHome = m.homeTeam.id === teamId;
-        const homeScore = m.score.fullTime.home;
-        const awayScore = m.score.fullTime.away;
-
-        if (homeScore === awayScore) return "E";
-        if (isHome) return homeScore > awayScore ? "V" : "D";
-        return awayScore > homeScore ? "V" : "D";
-      });
-    } catch (e) {
-      return ["E", "E", "E", "E", "E"];
-    }
-  }
+  // Chave da API (Substitui pela tua chave do The Odds API ou Football-Data se usares)
+  const API_KEY = process.env.ODDS_API_KEY || 'SUA_CHAVE_AQUI';
 
   try {
-    const responsePPL = await fetch('https://api.football-data.org/v4/competitions/PPL/matches?status=SCHEDULED', { headers });
-    const dataPPL = await responsePPL.json();
+    // Exemplo chamando a The Odds API (Premier League / Soccer)
+    const apiRes = await fetch(
+      `https://api.the-odds-api.com/v4/sports/soccer_epl/odds/?apiKey=${API_KEY}&regions=eu&markets=h2h`
+    );
 
-    const matchesList = dataPPL.matches ? dataPPL.matches.slice(0, 5) : [];
+    if (!apiRes.ok) {
+      return res.status(apiRes.status).json({ error: `Erro na API externa: ${apiRes.statusText}` });
+    }
 
-    const formattedMatches = await Promise.all(matchesList.map(async (m, index) => {
-      const [hForm, aForm] = await Promise.all([
-        getTeamForm(m.homeTeam.id),
-        getTeamForm(m.awayTeam.id)
-      ]);
-
-      return {
-        id: m.id || index + 1,
-        liga: "Portugal",
-        equipas: `${m.homeTeam.shortName || m.homeTeam.name} vs ${m.awayTeam.shortName || m.awayTeam.name}`,
-        homeTeam: m.homeTeam.shortName || m.homeTeam.name,
-        awayTeam: m.awayTeam.shortName || m.awayTeam.name,
-        hForm: hForm.length ? hForm : ["V", "E", "V", "D", "V"],
-        aForm: aForm.length ? aForm : ["D", "E", "V", "E", "D"],
-        opcoes: [
-          { label: `Vitória ${m.homeTeam.shortName || 'Casa'} (1)`, odd: 1.85 },
-          { label: "Ambas Marcam (Sim)", odd: 1.75 },
-          { label: "Over 2.5 Golos", odd: 1.80 }
-        ]
-      };
-    }));
-
-    res.status(200).json(formattedMatches);
-
+    const data = await apiRes.json();
+    return res.status(200).json(data);
   } catch (error) {
-    res.status(500).json({ error: 'Erro ao carregar dados em tempo real', details: error.message });
+    return res.status(500).json({ error: error.message || 'Erro interno no servidor' });
   }
 }
