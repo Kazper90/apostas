@@ -69,16 +69,23 @@
 
         .header-banner {
             text-align: center;
-            padding: 25px 20px 15px 20px;
-            background: linear-gradient(180deg, rgba(21, 28, 44, 0.8) 0%, rgba(11, 15, 25, 0) 100%);
+            padding: 35px 20px 20px 20px;
+            background: linear-gradient(180deg, rgba(21, 28, 44, 0.9) 0%, rgba(11, 15, 25, 0) 100%);
             border-bottom: 1px solid var(--border);
         }
 
-        .header-logo {
-            max-height: 80px;
-            width: auto;
-            object-fit: contain;
-            margin-bottom: 10px;
+        .brand-title {
+            font-size: 2.3rem;
+            font-weight: 900;
+            margin: 0;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #ffffff;
+            text-shadow: 0 3px 15px rgba(0,0,0,0.6);
+        }
+
+        .brand-title span {
+            color: var(--gold);
         }
 
         .header-subtitle {
@@ -87,7 +94,7 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 3px;
-            margin-top: 5px;
+            margin-top: 10px;
         }
 
         .container {
@@ -294,16 +301,9 @@
         </div>
     </div>
 
-    <!-- CABEÇALHO / LOGÓTIPO & BANNER -->
+    <!-- CABEÇALHO / LOGÓTIPO -->
     <div class="header-banner">
-        <!-- Substitui "logo.png" pelo nome exato do ficheiro da tua imagem de logótipo -->
-        <img src="logo.png" alt="Vira Frangos" class="header-logo" onerror="this.style.display='none'; document.getElementById('fallback-title').style.display='block';">
-        
-        <!-- Caso a imagem falhe ao carregar, este título serve de segurança -->
-        <h1 id="fallback-title" style="display:none; color: #ffffff; font-size: 2rem; font-weight: 900; margin: 0; letter-spacing: 2px; text-transform: uppercase;">
-            Vira Frangos <span style="color: var(--gold);">Challenge 10K</span>
-        </h1>
-
+        <h1 class="brand-title">Vira Frangos <span>Challenge 10K</span></h1>
         <div class="header-subtitle"><i class="fa-solid fa-fire"></i> Prognósticos & Gestão de Banca Profissional</div>
     </div>
 
