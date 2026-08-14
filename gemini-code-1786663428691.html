@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vira Frangos! — Challenge Rumo aos 10K</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #151c2c;
+            --primary-red: #dc2626;
+            --primary-red-hover: #b91c1c;
+            --gold: #f59e0b;
+            --green: #10b981;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #1e293b;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-light);
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            background: #090d16;
+            border-bottom: 2px solid var(--primary-red);
+            padding: 12px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            white-space: nowrap;
+        }
+
+        /* LOGO ESTILIZADO E PERFEITO */
+        .brand img {
+            height: 48px;
+            width: 48px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 2px solid var(--gold);
+            box-shadow: 0 0 12px rgba(220, 38, 38, 0.4);
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            line-height: 1;
+        }
+
+        .brand h1 span { color: var(--primary-red); }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active, .tab-btn:hover {
+            background: var(--primary-red);
+            color: white;
+            border-color: var(--primary-red);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .card-header-title {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .card-value {
+            font-size: 2rem;
+            font-weight: 800;
+        }
+
+        .card-value.highlight { color: var(--gold); }
+        .card-value.red { color: var(--primary-red); }
+
+        .progress-container {
+            background: var(--border);
+            border-radius: 10px;
+            height: 12px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, var(--primary-red), var(--gold));
+            height: 100%;
+            width: 0.5%;
+            transition: width 0.8s ease-in-out;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th { background: #111726; color: var(--text-muted); font-size: 0.85rem; }
+
+        .badge-pending { background: #d97706; color: white; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
+
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; color: var(--text-muted); }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            background: #0d121f;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: white;
+            box-sizing: border-box;
+        }
+
+        .btn-action {
+            background: var(--primary-red);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn-action:hover { background: var(--primary-red-hover); }
+
+        .chart-box { height: 350px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <div class="brand">
+            <!-- LOGO OFICIAL ESTILIZADO VIA WEB -->
+         <img src="ViraFrangosLogo.jpg" alt="Logo Vira Frangos">
+            <h1>Vira <span>Frangos!</span></h1>
+        </div>
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="switchTab('dashboard')"><i class="fa-solid fa-chart-line"></i> Dashboard</button>
+            <button class="tab-btn" onclick="switchTab('analise')"><i class="fa-solid fa-calculator"></i> Analisador</button>
+            <button class="tab-btn" onclick="switchTab('simulador')"><i class="fa-solid fa-fire"></i> Simulador 10K</button>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <!-- TAB 1: DASHBOARD -->
+        <div id="dashboard" class="tab-content active">
+            <div class="grid">
+                <div class="card">
+                    <div class="card-header-title">Banca Atual (Challenge)</div>
+                    <div class="card-value highlight">50,55 NOK</div>
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: 0.5%;"></div>
+                    </div>
+                    <small style="color: var(--text-muted); margin-top: 8px; display: block;">Progresso: 0.5% rumo aos 10.000 NOK</small>
+                </div>
+                <div class="card">
+                    <div class="card-header-title">Ronda #1 Em Jogo</div>
+                    <div class="card-value red">105,65 NOK</div>
+                    <small style="color: var(--text-muted);">Retorno Potencial (Odd Total: 2.09)</small>
+                </div>
+                <div class="card">
+                    <div class="card-header-title">Reserva de Emergência</div>
+                    <div class="card-value" style="color: #38bdf8;">200,00 NOK</div>
+                    <small style="color: var(--text-muted);">Capital Protegido Intocável</small>
+                </div>
+            </div>
+
+            <!-- GRÁFICO -->
+            <div class="card">
+                <div class="card-header-title">Curva de Evolução do Challenge</div>
+                <div class="chart-box">
+                    <canvas id="evolutionChart"></canvas>
+                </div>
+            </div>
+
+            <!-- REGISTO -->
+            <div class="card" style="margin-top: 25px;">
+                <div class="card-header-title">Últimas Rondas Registadas</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ronda</th>
+                            <th>Data</th>
+                            <th>Entrada / Jogos</th>
+                            <th>Odd</th>
+                            <th>Stake</th>
+                            <th>Retorno</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rondas-list">
+                        <tr>
+                            <td><strong>#1</strong></td>
+                            <td>14/08/2026</td>
+                            <td>
+                                • Telstar vs Sparta Rotterdam (BTTS Sim)<br>
+                                • Galatasaray vs Çorum FK (1X2)<br>
+                                • Sporting CP vs Vitória SC (1X2)
+                            </td>
+                            <td>2.09</td>
+                            <td>50,55 NOK</td>
+                            <td>105,65 NOK</td>
+                            <td><span class="badge-pending">EM JOGO</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 2: ANALISADOR INTERATIVO -->
+        <div id="analise" class="tab-content">
+            <div class="grid" style="grid-template-columns: 1fr 1fr;">
+                <div class="card">
+                    <div class="card-header-title">Avaliar Nova Entrada (Score de Risco)</div>
+                    <div class="form-group">
+                        <label>Jogo / Múltipla:</label>
+                        <input type="text" id="input-jogo" placeholder="Ex: FC Porto vs Benfica">
+                    </div>
+                    <div class="form-group">
+                        <label>Odd Total Oferecida:</label>
+                        <input type="number" id="input-odd" step="0.01" placeholder="Ex: 1.75">
+                    </div>
+                    <div class="form-group">
+                        <label>Forma Recente (0 a 10):</label>
+                        <input type="number" id="score-forma" min="0" max="10" placeholder="8">
+                    </div>
+                    <div class="form-group">
+                        <label>Valor Estatístico (+EV) (0 a 10):</label>
+                        <input type="number" id="score-valor" min="0" max="10" placeholder="7">
+                    </div>
+                    <button class="btn-action" onclick="calcularScore()">Calcular Viabilidade</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-header-title">Resultado da Análise</div>
+                    <div id="analise-resultado" style="text-align: center; padding-top: 30px;">
+                        <i class="fa-solid fa-shield-halved" style="font-size: 3rem; color: var(--text-muted);"></i>
+                        <p style="color: var(--text-muted); margin-top: 15px;">Preenche os dados à esquerda para calcular o risco da aposta.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: SIMULADOR 10K -->
+        <div id="simulador" class="tab-content">
+            <div class="card">
+                <div class="card-header-title">Simulador de Rondas Rumo aos 10.000 NOK</div>
+                <p style="color: var(--text-muted);">Simula quantas rondas precisas para bater o objetivo com base numa Odd Média estimada:</p>
+                
+                <div class="grid" style="grid-template-columns: 1fr 2fr; margin-top: 20px;">
+                    <div>
+                        <div class="form-group">
+                            <label>Odd Média por Ronda:</label>
+                            <input type="number" id="sim-odd" value="1.70" step="0.05">
+                        </div>
+                        <div class="form-group">
+                            <label>Banca Inicial (NOK):</label>
+                            <input type="number" id="sim-banca" value="50.55">
+                        </div>
+                        <button class="btn-action" onclick="gerarSimulacao()">Simular Trajetória</button>
+                    </div>
+                    <div>
+                        <table id="tabela-simulacao">
+                            <thead>
+                                <tr>
+                                    <th>Ronda</th>
+                                    <th>Banca Inicial</th>
+                                    <th>Ganho Estimado</th>
+                                    <th>Banca Final</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        const ctx = document.getElementById('evolutionChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Start', 'R1', 'R2', 'R3', 'R4', 'R5', 'R6', 'R7', 'R8', 'R9', 'R10'],
+                datasets: [{
+                    label: 'Projeção (Odd ~1.70)',
+                    data: [50.55, 85.93, 146.08, 248.35, 422.19, 717.73, 1220.15, 2074.26, 3526.24, 5994.61, 10000],
+                    borderColor: '#dc2626',
+                    backgroundColor: 'rgba(220, 38, 38, 0.1)',
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { labels: { color: '#f8fafc' } } },
+                scales: {
+                    x: { ticks: { color: '#94a3b8' }, grid: { color: '#151c2c' } },
+                    y: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } }
+                }
+            }
+        });
+
+        function calcularScore() {
+            const forma = parseFloat(document.getElementById('score-forma').value) || 0;
+            const valor = parseFloat(document.getElementById('score-valor').value) || 0;
+            const odd = parseFloat(document.getElementById('input-odd').value) || 1;
+
+            const finalScore = ((forma * 0.5) + (valor * 0.5)).toFixed(1);
+            let recomendacao = "";
+            let cor = "";
+
+            if (finalScore >= 7.5) {
+                recomendacao = "APROVADO: Forte valor estatístico para o Challenge!";
+                cor = "#10b981";
+            } else if (finalScore >= 5) {
+                recomendacao = "RISCO MÉDIO: Reduz a stake ou revê o bilhete.";
+                cor = "#f59e0b";
+            } else {
+                recomendacao = "REJEITADO: Risco demasiado elevado para All-In.";
+                cor = "#dc2626";
+            }
+
+            document.getElementById('analise-resultado').innerHTML = `
+                <h2 style="color:${cor}; font-size: 2.5rem; margin:0;">${finalScore} / 10</h2>
+                <p style="font-weight:bold; font-size:1.1rem; margin-top:10px;">${recomendacao}</p>
+                <small style="color:var(--text-muted);">Odd analisada: ${odd}</small>
+            `;
+        }
+
+        function gerarSimulacao() {
+            const odd = parseFloat(document.getElementById('sim-odd').value);
+            let banca = parseFloat(document.getElementById('sim-banca').value);
+            const tbody = document.querySelector('#tabela-simulacao tbody');
+            tbody.innerHTML = '';
+
+            let ronda = 1;
+            while (banca < 10000 && ronda <= 15) {
+                let ganho = banca * (odd - 1);
+                let bancaFinal = banca * odd;
+                
+                let tr = `<tr>
+                    <td>Ronda #${ronda}</td>
+                    <td>${banca.toFixed(2)} NOK</td>
+                    <td>+${ganho.toFixed(2)} NOK</td>
+                    <td><strong>${bancaFinal.toFixed(2)} NOK</strong></td>
+                </tr>`;
+                tbody.innerHTML += tr;
+                
+                banca = bancaFinal;
+                ronda++;
+            }
+        }
+
+        gerarSimulacao();
+    </script>
+</body>
+</html>
