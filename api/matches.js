@@ -1,5 +1,5 @@
 export default async function handler(req, res) {
-  // Configurações de CORS para não bloquear o front-end
+  // Configurações de CORS
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
@@ -13,17 +13,21 @@ export default async function handler(req, res) {
     return;
   }
 
-  // Chave da API (Substitui pela tua chave do The Odds API ou Football-Data se usares)
-  const API_KEY = process.env.ODDS_API_KEY || 'SUA_CHAVE_AQUI';
+  // A tua chave da Football-Data.org (podes colar a chave direta entre as aspas)
+  const API_KEY = process.env.FOOTBALL_DATA_KEY || 'e89eb735584b4ec4a5aca34fa4e91e53';
 
   try {
-    // Exemplo chamando a The Odds API (Premier League / Soccer)
-    const apiRes = await fetch(
-      `https://api.the-odds-api.com/v4/sports/soccer_epl/odds/?apiKey=${API_KEY}&regions=eu&markets=h2h`
-    );
+    // Pedido à API da Football-Data.org (exemplo: jogos agendados/próximos)
+    const apiRes = await fetch('https://api.football-data.org/v4/matches', {
+      headers: {
+        'X-Auth-Token': API_KEY
+      }
+    });
 
     if (!apiRes.ok) {
-      return res.status(apiRes.status).json({ error: `Erro na API externa: ${apiRes.statusText}` });
+      return res.status(apiRes.status).json({ 
+        error: `Erro na Football-Data.org: ${apiRes.statusText}` 
+      });
     }
 
     const data = await apiRes.json();
