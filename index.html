@@ -695,79 +695,69 @@
             if (element) element.classList.add('active');
         }
 
-        function renderJogos(liga = 'todas') {
-            ligaAtual = liga;
-            const container = document.getElementById('listaJogosContainer');
-            if (!container) return;
-            container.innerHTML = '';
+       async function renderJogos(liga = 'todas') {
+    ligaAtual = liga;
+    const container = document.getElementById('listaJogosContainer');
+    if (!container) return;
+    
+    container.innerHTML = '<div style="text-align: center; padding: 30px; color: var(--text-muted);">A carregar jogos...</div>';
 
-            const filtrados = baseJogos.filter(j => liga === 'todas' || j.liga === liga);
+    try {
+        const response = await fetch('/api/matches');
+        const baseJogos = await response.json();
+        
+        container.innerHTML = '';
 
-            if (filtrados.length === 0) {
-                container.innerHTML = `<div style="text-align:center; padding: 30px; color: var(--text-muted);">Sem jogos confirmados nesta liga entre 14 e 17 de agosto de 2026.</div>`;
-                return;
-            }
+        const filtrados = baseJogos.filter(j => liga === 'todas' || j.liga === liga);
 
-            filtrados.forEach(j => {
-                const query = encodeURIComponent(j.equipas.replace(' vs ', ' - '));
-                const betclicUrl = `https://www.betclic.pt/pesquisa?q=${query}`;
-                const oddscheckerUrl = `https://www.oddschecker.com/search?q=${query}`;
-
-                let html = `
-                    <div class="match-card">
-                        <div class="match-header">
-                            <div>
-                                <span class="league-label">${j.pais} &bull; ${j.data}</span>
-                                <div class="match-teams">${j.equipas}</div>
-                            </div>
-                            <span style="font-size: 0.75rem; color: var(--gold); font-weight: 700;"><i class="fa-solid fa-trophy"></i> ${j.liga}</span>
-                        </div>
-                        <div class="markets-grid">
-                `;
-                j.opcoes.forEach((label, idx) => {
-                    let idAposta = `${j.id}-${idx}`;
-                    let tipExistente = selectedTips.find(s => s.id === idAposta);
-                    let oddValor = tipExistente ? tipExistente.odd : '';
-                    let isSelected = !!tipExistente;
-                    html += `
-                        <div class="market-item">
-                            <span class="market-label">${label}</span>
-                            <div style="display:flex; gap:6px; align-items:center;">
-                                <input type="number" step="0.01" min="1.01" class="odd-input" id="odd-${idAposta}" placeholder="Odd" value="${oddValor}" oninput="syncValueCalc('${idAposta}')">
-                                <button class="btn-add ${isSelected ? 'active' : ''}" id="btn-${idAposta}" onclick="toggleAposta('${idAposta}', '${j.equipas.replace(/'/g, "\\'")}', '${label.replace(/'/g, "\\'")}')">
-                                    ${isSelected ? '<i class="fa-solid fa-check"></i>' : '<i class="fa-solid fa-plus"></i>'}
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                });
-                html += `</div>`;
-
-                html += `
-                    <div class="match-links">
-                        <a class="ext-link-btn betclic" href="${betclicUrl}" target="_blank" rel="noopener">
-                            <i class="fa-solid fa-arrow-up-right-from-square"></i> Ver na Betclic
-                        </a>
-                        <a class="ext-link-btn" href="${oddscheckerUrl}" target="_blank" rel="noopener">
-                            <i class="fa-solid fa-scale-balanced"></i> Comparar Odds
-                        </a>
-                    </div>
-                    <button class="value-calc-toggle" onclick="toggleValueCalc(${j.id})">
-                        <i class="fa-solid fa-calculator"></i> Calculadora de valor
-                    </button>
-                    <div class="value-calc-box" id="calc-${j.id}">
-                        <div class="value-calc-row">
-                            Odd oferecida: <input type="number" step="0.01" id="calcOdd-${j.id}" placeholder="ex: 1.85" oninput="calcularValor(${j.id})">
-                            A tua probabilidade estimada (%): <input type="number" step="1" id="calcProb-${j.id}" placeholder="ex: 55" oninput="calcularValor(${j.id})">
-                        </div>
-                        <div class="value-calc-result" id="calcResult-${j.id}"></div>
-                    </div>
-                `;
-
-                html += `</div>`;
-                container.innerHTML += html;
-            });
+        if (filtrados.length === 0) {
+            container.innerHTML = '<div style="text-align: center; padding: 30px; color: var(--text-muted);">Sem jogos confirmados para este filtro.</div>';
+            return;
         }
+
+        filtrados.forEach(j => {
+            const query = encodeURIComponent(j.equipas.replace(' vs ', ' - '));
+            
+            let html = `
+                <div class="match-card">
+                    <div class="match-header">
+                        <div>
+                            <span class="league-label">${j.liga} &bull; ${j.data}</span>
+                            <div class="match-teams">${j.equipas}</div>
+                        </div>
+                        <span style="font-size: 0.75rem; color: var(--gold); font-weight: 700;"><i class="fa-solid fa-trophy"></i></span>
+                    </div>
+                    <div class="markets-grid">
+            `;
+
+            j.opcoes.forEach((label, idx) => {
+                let idAposta = `${j.id}-${idx}`;
+                let tipExistente = selectedTips.find(s => s.id === idAposta);
+                let oddValor = tipExistente ? tipExistente.odd : '';
+                let isSelected = !!tipExistente;
+                
+                html += `
+                    <div class="market-item">
+                        <span class="market-label">${label}</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <input type="number" step="0.01" min="1.01" class="odd-input" id="odd-${idAposta}" placeholder="Odd" value="${oddValor}">
+                            <button class="btn-add ${isSelected ? 'active' : ''}" id="btn-${idAposta}" onclick="toggleAposta('${idAposta}', '${j.equipas} (${label})')">
+                                <i class="fa-solid ${isSelected ? 'fa-check' : 'fa-plus'}"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div></div>`;
+            container.innerHTML += html;
+        });
+
+    } catch (error) {
+        console.error('Erro ao carregar os jogos da API:', error);
+        container.innerHTML = '<div style="text-align: center; padding: 30px; color: #ef4444;">Erro ao carregar dados do servidor.</div>';
+    }
+}
 
         function filtrarLiga(liga, element) {
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
