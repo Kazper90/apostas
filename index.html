@@ -860,6 +860,25 @@
                 <div style="font-size: 0.85rem; color: var(--text-muted);">Isto não é uma recomendação de valor — é só um ponto de partida aleatório. Vai à aba "Todos os Jogos" para veres os mercados e introduzires as odds reais.</div>
             `;
         }
+        window.switchTab = function(tabId, btnElement) {
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+        tab.style.display = 'none';
+    });
+
+    const targetTab = document.getElementById(tabId);
+    if (targetTab) {
+        targetTab.classList.add('active');
+        targetTab.style.display = 'block';
+    }
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    if (btnElement) {
+        btnElement.classList.add('active');
+    }
+};
 window.onload = async function() {
     try {
         const resposta = await fetch('/api/dashboard');
