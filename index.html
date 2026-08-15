@@ -979,6 +979,27 @@ if(dados.banca) {
                     }
                 }
             });
+        function switchTab(tabId, btnElement) {
+    // 1. Esconder todas as secções de conteúdo
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+        tab.style.display = 'none';
+    });
+
+    // 2. Mostrar apenas a secção selecionada
+    const targetTab = document.getElementById(tabId);
+    if (targetTab) {
+        targetTab.classList.add('active');
+        targetTab.style.display = 'block';
+    }
+
+    // 3. Remover a classe ativa de todos os botões do menu e colocar no clicado
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    if (btnElement) {
+        btnElement.classList.add('active');
+    }
         };
     </script>
 </body>
