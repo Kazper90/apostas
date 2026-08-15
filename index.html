@@ -421,6 +421,11 @@
                     <div class="card-value blue">200,00 NOK</div>
                     <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 8px;">Capital Protegido Intocável</p>
                 </div>
+                <div class="card">
+            <div class="card-title">Performance (ROI & Win Rate)</div>
+            <div class="card-value gold" id="stats-roi">0.0% ROI</div>
+            <div class="card-desc" id="stats-winrate" style="color: var(--text-muted); font-size: 0.8rem; margin-top: 8px;">Taxa de Acerto: 0%</div>
+        </div>
             </div>
 
             <div class="card" style="margin-bottom: 25px;">
@@ -862,10 +867,14 @@
                 const resposta = await fetch('/api/dashboard');
                 const dados = await resposta.json();
 
-                if(dados.banca) {
+              if(dados.banca) {
                     document.querySelector('.card-value.gold').innerText = `${dados.banca.saldo_atual} NOK`;
                 }
 
+                if(dados.stats) {
+                    document.getElementById('stats-roi').innerText = `${dados.stats.roi}% ROI`;
+                    document.getElementById('stats-winrate').innerText = `Taxa de Acerto: ${dados.stats.winRate}% (${dados.stats.wins}W - ${dados.stats.losses}L)`;
+                }
                 const tbody = document.querySelector('tbody');
                 if(tbody && dados.apostas && dados.apostas.length > 0) {
                     tbody.innerHTML = '';
