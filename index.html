@@ -911,7 +911,25 @@ if(dados.banca) {
             } catch (erro) {
                 console.error("Erro ao carregar dados do servidor:", erro);
             }
-// Carregar dados dinâmicos do Dashboard (/api/dashboard)
+function switchTab(tabId, btnElement) {
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+        tab.style.display = 'none';
+    });
+
+    const targetTab = document.getElementById(tabId);
+    if (targetTab) {
+        targetTab.classList.add('active');
+        targetTab.style.display = 'block';
+    }
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    if (btnElement) {
+        btnElement.classList.add('active');
+    }
+}// Carregar dados dinâmicos do Dashboard (/api/dashboard)
     try {
         const response = await fetch('/api/dashboard');
         const data = await response.json();
@@ -1031,25 +1049,7 @@ if(dados.banca) {
     }
 }
 
-function switchTab(tabId, btnElement) {
-    document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.classList.remove('active');
-        tab.style.display = 'none';
-    });
 
-    const targetTab = document.getElementById(tabId);
-    if (targetTab) {
-        targetTab.classList.add('active');
-        targetTab.style.display = 'block';
-    }
-
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    if (btnElement) {
-        btnElement.classList.add('active');
-    }
-}
     </script>
 </body>
 </html>
