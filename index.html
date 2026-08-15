@@ -860,57 +860,58 @@
                 <div style="font-size: 0.85rem; color: var(--text-muted);">Isto não é uma recomendação de valor — é só um ponto de partida aleatório. Vai à aba "Todos os Jogos" para veres os mercados e introduzires as odds reais.</div>
             `;
         }
+window.onload = async function() {
+    try {
+        const resposta = await fetch('/api/dashboard');
+        const dados = await resposta.json();
 
-       window.onload = async function() {
-            try {
-                const resposta = await fetch('/api/dashboard');
-                const dados = await resposta.json();
-if(dados.banca) {
-                const saldoAtual = Number(dados.banca.saldo_atual);
-                const meta = 10000;
-                const percentagem = Math.min((saldoAtual / meta) * 100, 100).toFixed(1);
+        if (dados.banca) {
+            const saldoAtual = Number(dados.banca.saldo_atual);
+            const meta = 10000;
+            const percentagem = Math.min((saldoAtual / meta) * 100, 100).toFixed(1);
 
-                document.getElementById('banca-atual').innerText = `${saldoAtual.toFixed(2)} NOK`;
-                
-                const progressFill = document.getElementById('progress-fill');
-                const progressText = document.getElementById('progress-text');
-                
-                if(progressFill) progressFill.style.width = `${percentagem}%`;
-                if(progressText) progressText.innerText = `Progresso: ${percentagem}% rumo aos 10.000 NOK`;
-            }
+            document.getElementById('banca-atual').innerText = `${saldoAtual.toFixed(2)} NOK`;
 
-            if(dados.stats) {
-                document.getElementById('stats-roi').innerText = `${dados.stats.roi}% ROI`;
-                document.getElementById('stats-winrate').innerText = `Taxa de Acerto: ${dados.stats.winRate}% (${dados.stats.wins}W - ${dados.stats.losses}L)`;
-            }
-                }
-                const tbody = document.querySelector('tbody');
-                if(tbody && dados.apostas && dados.apostas.length > 0) {
-                    tbody.innerHTML = '';
-                    dados.apostas.forEach((aposta, index) => {
-                        let badgeClass = "badge-live";
-                        let estadoCor = "EM JOGO";
-                        if(aposta.estado === 'GANHA') { badgeClass = "badge-win"; estadoCor = "GANHA"; }
-                        if(aposta.estado === 'PERDIDA') { badgeClass = "badge-loss"; estadoCor = "PERDIDA"; }
+            const progressFill = document.getElementById('progress-fill');
+            const progressText = document.getElementById('progress-text');
 
-                        const retorno = (aposta.odd * aposta.stake).toFixed(2);
+            if (progressFill) progressFill.style.width = `${percentagem}%`;
+            if (progressText) progressText.innerText = `Progresso: ${percentagem}% rumo aos 10.000 NOK`;
+        }
 
-                        tbody.innerHTML += `
-                            <tr>
-                                <td><b>#${index + 1}</b></td>
-                                <td>${new Date(aposta.data_jogo).toLocaleDateString('pt-PT')}</td>
-                                <td>• ${aposta.equipas} (${aposta.selecao})</td>
-                                <td><b>${aposta.odd}</b></td>
-                                <td>${aposta.stake} NOK</td>
-                                <td>${retorno} NOK</td>
-                                <td><span class="${badgeClass}">${estadoCor}</span></td>
-                            </tr>
-                        `;
-                    });
-                }
-            } catch (erro) {
-                console.error("Erro ao carregar dados do servidor:", erro);
-            }
+        if (dados.stats) {
+            document.getElementById('stats-roi').innerText = `${dados.stats.roi}% ROI`;
+            document.getElementById('stats-winrate').innerText = `Taxa de Acerto: ${dados.stats.winRate}% (${dados.stats.wins}W - ${dados.stats.losses}L)`;
+        }
+
+        const tbody = document.querySelector('tbody');
+        if (tbody && dados.apostas && dados.apostas.length > 0) {
+            tbody.innerHTML = '';
+            dados.apostas.forEach((aposta, index) => {
+                let badgeClass = "badge-live";
+                let estadoCor = "EM JOGO";
+                if (aposta.estado === 'GANHA') { badgeClass = "badge-win"; estadoCor = "GANHA"; }
+                if (aposta.estado === 'PERDIDA') { badgeClass = "badge-loss"; estadoCor = "PERDIDA"; }
+
+                const retorno = (aposta.odd * aposta.stake).toFixed(2);
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td><b>#${index + 1}</b></td>
+                        <td>${new Date(aposta.data_jogo).toLocaleDateString('pt-PT')}</td>
+                        <td>• ${aposta.equipas} (${aposta.selecao})</td>
+                        <td><b>${aposta.odd}</b></td>
+                        <td>${aposta.stake} NOK</td>
+                        <td>${retorno} NOK</td>
+                        <td><span class="${badgeClass}">${estadoCor}</span></td>
+                    </tr>
+                `;
+            });
+        }
+    } catch (erro) {
+        console.error("Erro ao carregar dados do servidor:", erro);
+    }
+};
 function switchTab(tabId, btnElement) {
     document.querySelectorAll('.tab-content').forEach(tab => {
         tab.classList.remove('active');
