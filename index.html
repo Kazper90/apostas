@@ -407,9 +407,11 @@
             <div class="grid-3">
                 <div class="card">
                     <div class="card-title">Banca Atual (Challenge)</div>
-                    <div class="card-value gold">50,55 NOK</div>
-                    <div class="progress-bar"><div class="progress-fill"></div></div>
-                    <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 8px;">Progresso: 0.5% rumo aos 10.000 NOK</p>
+                   <div class="card-value gold" id="banca-atual">50,55 NOK</div>
+<div class="progress-bar">
+    <div class="progress-fill" id="progress-fill" style="width: 0.5%;"></div>
+</div>
+<p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 8px;" id="progress-text">Progresso: 0.5% rumo aos 10.000 NOK</p>
                 </div>
                 <div class="card">
                     <div class="card-title">Ronda #1 em Jogo</div>
@@ -866,14 +868,24 @@
             try {
                 const resposta = await fetch('/api/dashboard');
                 const dados = await resposta.json();
+if(dados.banca) {
+                const saldoAtual = Number(dados.banca.saldo_atual);
+                const meta = 10000;
+                const percentagem = Math.min((saldoAtual / meta) * 100, 100).toFixed(1);
 
-              if(dados.banca) {
-                    document.querySelector('.card-value.gold').innerText = `${dados.banca.saldo_atual} NOK`;
-                }
+                document.getElementById('banca-atual').innerText = `${saldoAtual.toFixed(2)} NOK`;
+                
+                const progressFill = document.getElementById('progress-fill');
+                const progressText = document.getElementById('progress-text');
+                
+                if(progressFill) progressFill.style.width = `${percentagem}%`;
+                if(progressText) progressText.innerText = `Progresso: ${percentagem}% rumo aos 10.000 NOK`;
+            }
 
-                if(dados.stats) {
-                    document.getElementById('stats-roi').innerText = `${dados.stats.roi}% ROI`;
-                    document.getElementById('stats-winrate').innerText = `Taxa de Acerto: ${dados.stats.winRate}% (${dados.stats.wins}W - ${dados.stats.losses}L)`;
+            if(dados.stats) {
+                document.getElementById('stats-roi').innerText = `${dados.stats.roi}% ROI`;
+                document.getElementById('stats-winrate').innerText = `Taxa de Acerto: ${dados.stats.winRate}% (${dados.stats.wins}W - ${dados.stats.losses}L)`;
+            }
                 }
                 const tbody = document.querySelector('tbody');
                 if(tbody && dados.apostas && dados.apostas.length > 0) {
