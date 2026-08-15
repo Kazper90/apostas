@@ -969,28 +969,87 @@ if(dados.banca) {
                     }
                 }
             });
-        function switchTab(tabId, btnElement) {
-    // 1. Esconder todas as secções de conteúdo
+     async function renderJogos(liga = 'todas') {
+    ligaAtual = liga;
+    const container = document.getElementById('listaJogosContainer');
+    if (!container) return;
+    
+    container.innerHTML = '<div style="text-align: center; padding: 30px; color: var(--text-muted);">A carregar jogos...</div>';
+
+    try {
+        const response = await fetch('/api/matches');
+        const baseJogos = await response.json();
+        
+        container.innerHTML = '';
+
+        const filtrados = baseJogos.filter(j => liga === 'todas' || j.liga === liga);
+
+        if (filtrados.length === 0) {
+            container.innerHTML = '<div style="text-align: center; padding: 30px; color: var(--text-muted);">Sem jogos confirmados para este filtro.</div>';
+            return;
+        }
+
+        filtrados.forEach(j => {
+            let html = `
+                <div class="match-card">
+                    <div class="match-header">
+                        <div>
+                            <span class="league-label">${j.liga} &bull; ${j.data}</span>
+                            <div class="match-teams">${j.equipas}</div>
+                        </div>
+                        <span style="font-size: 0.75rem; color: var(--gold); font-weight: 700;"><i class="fa-solid fa-trophy"></i></span>
+                    </div>
+                    <div class="markets-grid">
+            `;
+
+            j.opcoes.forEach((label, idx) => {
+                let idAposta = `${j.id}-${idx}`;
+                let tipExistente = selectedTips.find(s => s.id === idAposta);
+                let oddValor = tipExistente ? tipExistente.odd : '';
+                let isSelected = !!tipExistente;
+                
+                html += `
+                    <div class="market-item">
+                        <span class="market-label">${label}</span>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <input type="number" step="0.01" min="1.01" class="odd-input" id="odd-${idAposta}" placeholder="Odd" value="${oddValor}">
+                            <button class="btn-add ${isSelected ? 'active' : ''}" id="btn-${idAposta}" onclick="toggleAposta('${idAposta}', '${j.equipas} (${label})')">
+                                <i class="fa-solid ${isSelected ? 'fa-check' : 'fa-plus'}"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div></div>`;
+            container.innerHTML += html;
+        });
+
+    } catch (error) {
+        console.error('Erro ao carregar os jogos da API:', error);
+        container.innerHTML = '<div style="text-align: center; padding: 30px; color: #ef4444;">Erro ao carregar dados do servidor.</div>';
+    }
+}
+
+function switchTab(tabId, btnElement) {
     document.querySelectorAll('.tab-content').forEach(tab => {
         tab.classList.remove('active');
         tab.style.display = 'none';
     });
 
-    // 2. Mostrar apenas a secção selecionada
     const targetTab = document.getElementById(tabId);
     if (targetTab) {
         targetTab.classList.add('active');
         targetTab.style.display = 'block';
     }
 
-    // 3. Remover a classe ativa de todos os botões do menu e colocar no clicado
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.remove('active');
     });
     if (btnElement) {
         btnElement.classList.add('active');
     }
-        };
+}
     </script>
 </body>
 </html>
